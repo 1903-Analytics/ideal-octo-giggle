@@ -10,7 +10,7 @@
 
 # script start; ####
 
-.get_type <- function(
+get_type <- function(
     list
 ) {
   

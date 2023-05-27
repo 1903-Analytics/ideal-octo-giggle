@@ -27,8 +27,21 @@ generate_workbook <- function(
     title     = NULL,
     subject   = NULL,
     category  = NULL,
+    theme     = list(
+      compact = TRUE,
+      combine = FALSE,
+      color   = 'Reds'
+    ),
     overwrite = TRUE
 ) {
+  
+  
+  coordinates <- get_coordinate(
+    list = list,
+    theme = theme
+  )
+  
+  
   
   # 1) Generate workbook
   # TODO: consider wether this
@@ -43,7 +56,7 @@ generate_workbook <- function(
   
   # 2) Generate worksheets
   # based on the list
-  .add_worksheet(
+  add_worksheet(
     wb = wb,
     list = list
   )
@@ -51,9 +64,18 @@ generate_workbook <- function(
   
   # 3) Add data to the sheets
   # based on the list
-  .add_data(
+  add_data(
     wb = wb,
-    list = list
+    list = list,
+    theme = theme
+  )
+  
+  add_theme(
+    wb = wb,
+    coordinates = coordinates,
+    theme = list(
+      color = theme$color
+    )
   )
   
   # 4) Store the workbook

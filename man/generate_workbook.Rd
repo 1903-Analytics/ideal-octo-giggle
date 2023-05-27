@@ -11,6 +11,7 @@ generate_workbook(
   title = NULL,
   subject = NULL,
   category = NULL,
+  theme = list(compact = TRUE, combine = FALSE, color = "Reds"),
   overwrite = TRUE
 )
 }

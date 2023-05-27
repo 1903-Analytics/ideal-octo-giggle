@@ -8,24 +8,43 @@
 #' .add_data
 #' 
 #' @importFrom openxlsx writeData
+#' @importFrom openxlsx createStyle
+#' @importFrom data.table fifelse
 # script start; ####
-.add_data <- function(
+add_data <- function(
     wb,
     list,
-    color
+    color,
+    theme = list(
+      compact = TRUE,
+      combine = FALSE
+    )
 ) {
   
   
   # determine type;
-  type <- .get_type(
+  type <- get_type(
     list = list
   )
+  
+  # get coordinates
+  coordinate <- get_coordinate(
+    list = list,
+    theme = theme
+  )
+  
+  
   
   
   iteration <- 1
   
   
-  if (grepl(pattern = 'list', x = type)) {
+  if (all(grepl(pattern = 'list', x = type))) {
+    
+    
+    message(
+      'Is list'
+    )
     
     # TODO: migrate as seperate function
     # can be inside
@@ -56,7 +75,12 @@
                   x = DT,
                   sheet = iteration,
                   startRow = startRow,
-                  startCol = startCol
+                  startCol = startCol,
+                  borders = 'surrounding',
+                  headerStyle = createStyle(
+                    border = c('TopBottom')
+                  )
+                  
                   
                 )
                 
@@ -84,36 +108,51 @@
     # seperate function
     
     
+    
     lapply(
       list,
       function(element) {
         
+        coordinate <- coordinate[[iteration]]
+        coordinate_iteration <- 1
+        
         startCol <- 3
-        cols <<- max(
-          sapply(element, ncol)
-        )
+        startRow <- 3
+        # cols <<- max(
+        #   sapply(element, ncol)
+        # )
         
         lapply(
           element,
           function(DT) {
             
-            startRow <- 3
-            
             writeData(
               wb = wb,
               x = DT,
               sheet = iteration,
-              startRow = startRow,
-              startCol = startCol
-              
+              startRow = coordinate$y_start[coordinate_iteration],
+              startCol = startCol,
+              colNames = fifelse(
+                test = theme$combine,
+                yes = fifelse(
+                  coordinate_iteration > 1, no = TRUE, yes = FALSE
+                ),
+                no = TRUE
+              ),
+              borders = 'surrounding',
+              borderStyle = 'thin',
+              headerStyle = createStyle(
+                border = c('TopBottom')
+              )
             )
             
-            startRow  <<- startRow + nrow(DT) + 1
+            coordinate_iteration <<- coordinate_iteration + 1
+            #startRow  <<- startRow + nrow(DT) + 1
             
           }
         )
         
-        startCol <<- startCol + cols + 1
+        #startCol <<- startCol + cols + 1
         
         iteration <<- iteration + 1
       }

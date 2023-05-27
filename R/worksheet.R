@@ -12,7 +12,7 @@
 # script start; ####
 
 
-.add_worksheet <- function(
+add_worksheet <- function(
     wb   = NULL,
     list = NULL 
 ) {
