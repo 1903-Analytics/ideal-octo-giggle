@@ -6,6 +6,8 @@
 \alias{workbookR-package}
 \title{workbookR: Create Woorkbooks with a high level Openxlsx API}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 A high level openxlsx wrapper for tables
 }
 \author{
