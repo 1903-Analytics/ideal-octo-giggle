@@ -21,13 +21,13 @@ The `syntax` is simple. The `data` to be stored as a `workbook` is given as nest
 ```R
 DT <- list(
   sheet1 = list(
-    data.table::data.table(
-      value = runif(10, 0,1)
+    table1 = data.table::data.table(
+      value = runif(10, 0, 1)
     )
   ),
   sheet2 = list(
-    data.table::data.table(
-      value = runif(10, 0,1)
+    table1 = data.table::data.table(
+      value = runif(10, 0, 1)
     )
   )
 )
