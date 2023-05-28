@@ -1,6 +1,7 @@
   <!-- badges: start -->
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
   <!-- badges: end -->
+workbookR <img src="man/figures/logo.png" align="right" height="120" />
 
 # workbookR
 
@@ -22,11 +23,13 @@ The `syntax` is simple. The `data` to be stored as a `workbook` is given as nest
 DT <- list(
   sheet1 = list(
     table1 = data.table::data.table(
+      id = 1:10,
       value = runif(10, 0, 1)
     )
   ),
   sheet2 = list(
     table1 = data.table::data.table(
+      id = 1:10,
       value = runif(10, 0, 1)
     )
   )
