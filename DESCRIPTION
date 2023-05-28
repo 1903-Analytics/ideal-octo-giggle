@@ -4,7 +4,7 @@ Version: 1.0.0
 Authors@R: 
     person("Serkan", "Korkmaz", , "info@1903analytics.ai", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5052-0982"))
-Description: What the package does (one paragraph).
+Description: A high level openxlsx wrapper for tables
 License: GPL (>= 2)
 Encoding: UTF-8
 Language: EN
