@@ -39,62 +39,74 @@ data_coordinates <- function(
   )
   
   
-  list_id <- 1
+  
+  
+  
+  
+  
+  column_caption <- names(list)
+  
+  
+  # Sheet iterator in
+  # the workbook
+  sheet_iterator <- 0
   
   lapply(
     list,
-    function(element) {
+    function(sheet_element) {
       
-      iteration <- 1
-      
+      sheet_iterator <<- sheet_iterator + 1
+      table_iterator <- 0
       # Start coordinates; 
       
       # The X coordinate 
       # is the start and end of the header
       x_ <- 3
       
+      
       # The Y coordinate
       # is the start and end of the table
       y_ <- 3
       
-      DT <- rbindlist(
+      table_caption <- names(sheet_element)
+      
+      rbindlist(
         lapply(
-          element,
-          function(element_) {
+          sheet_element,
+          function(DT) {
             
-            DT <- data.table(
-              list_id = list_id,
-              table   = iteration,
-              nrow    = nrow(element_),
-              ncol    = ncol(element_),
+            
+            
+            table_iterator <<- table_iterator + 1
+            
+            DT_ <- data.table(
+              sheet_id = sheet_iterator,
+              table_caption = table_caption[table_iterator],
+              column_caption = column_caption[sheet_iterator],
+              table_content = list(
+                list[[sheet_iterator]][[table_iterator]]
+              ),
+              nrow    = nrow(DT),
+              ncol    = ncol(DT),
               x_start = x_,
-              x_end   = x_ + ncol(element_),
+              x_end   = x_ + ncol(DT),
               y_start = y_,
-              y_end   = y_ + nrow(element_)
+              y_end   = y_ + nrow(DT)
             )
-            
-            
-            
-            
+          
             # NOTE: The '+1' needs to be
             # changed to a dynamic value
             # depending on wether it should be
             # compact or not
-            y_ <<- y_ + DT$nrow + distance + combine
-            iteration <<- iteration + 1
+            y_ <<- y_ + DT_$nrow + distance + combine
             
-            return(DT)
+            
+            return(DT_)
             
           }
         )
       )
       
-      list_id <<- list_id + 1
-      
-      
-      return(
-        DT
-      )
       
       
     }
@@ -130,39 +142,69 @@ list_coordinates <- function(
     no = 0
   )
   
-  # list id;
-  # 
-  # sheet numbers
   
-  iteration <- 1
-  list_id <- 0
+  # Sheet iterator in
+  # the workbook
+  sheet_iterator <- 0
   
   lapply(
     list,
-    function(element) {
-      list_id <<- list_id + 1
+    function(sheet_element) {
+      
+      # Iterate sheet;
+      sheet_iterator <<- sheet_iterator + 1
+      
+      # The columns within
+      # each workbook; 
+      # Has to be reset between
+      # each sheet iteration.
+      column_iterator <- 0
+      
       x_ <- 3
       
-      DT <- lapply(
-        element,
-        function(element_) {
+      # extract captions
+      # of the columns
+      column_caption <- names(
+        list[[sheet_iterator]]
+      )
+      
+      
+      lapply(
+        sheet_element,
+        function(column_element) {
           
-          table_id <- 1
-          cols <<- max(
-            sapply(element_, ncol)
-          )
+          # iterate columns
+          column_iterator <<- column_iterator + 1
           
+          # The tables within each
+          # columns;
+          # Has to be reset between each column
+          table_iterator <- 0
           y_ <- 3
           
+          # identify the largest
+          # column number wiithin the list
+          cols <<- max(
+            sapply(column_element, ncol)
+          )
+          
+          
+          table_caption <- names(column_element)
           
           DT <- lapply(
-            element_,
+            column_element,
             function(DT) {
               
+              # iterate;
+              table_iterator <<- table_iterator + 1
               
               DT_ <- data.table(
-                list_id = list_id,
-                table   = table_id,
+                sheet_id = sheet_iterator,
+                column_caption = column_caption[column_iterator],
+                table_caption = table_caption[table_iterator],
+                table_content = list(
+                  list[[sheet_iterator]][[column_iterator]][[table_iterator]]
+                ),
                 nrow    = nrow(DT),
                 ncol    = ncol(DT),
                 x_start = x_,
@@ -172,15 +214,17 @@ list_coordinates <- function(
               )
               
               
-              
+              #column_id <<- column_id + 1
               y_  <<- y_ + nrow(DT) + 1
-              table_id <- table_id + 1
+              
+              
               return(DT_)
               
             }
           )
           
           
+          #caption_id <<- caption_id + 1
           
           x_ <<- x_ + cols + 1
           
@@ -190,14 +234,9 @@ list_coordinates <- function(
       )
       
       
-      iteration <<- iteration + 1
       
-      
-      return(DT)
     }
   )
-  
-  
   
 }
 
@@ -235,16 +274,22 @@ get_coordinate <- function(
   #   list
   # )
   
+  flatten <- function(x) {
+    if (!inherits(x, "list")) return(list(x))
+    else return(unlist(c(lapply(x, flatten)), recursive = FALSE))
+  }
+  
+  
   if (all(grepl(pattern = 'list', x = type))) {
     
-    coordinates <- list_coordinates(
+    coordinate_list <- list_coordinates(
       list = list,
       theme = theme
     )
     
   } else {
     
-    coordinates <- data_coordinates(
+    coordinate_list <- data_coordinates(
       list = list,
       theme = theme
     )
@@ -252,8 +297,55 @@ get_coordinate <- function(
     
   }
   
+  DT <- rbindlist(
+    flatten(
+      coordinate_list
+    )
+  )
+  
+  # setorder(
+  #   DT,
+  #   sheet_id,
+  #   column_caption,
+  #   table_caption
+  #   
+  # )
+  
+  DT[
+    ,
+    `:=`(
+      table_order  = seq_len(.N)
+    )
+
+    ,
+    by = .(
+      sheet_id,
+      column_caption
+    )
+  ][
+    ,
+    `:=`(
+      column_order  = fifelse(
+        table_order == 1, 1, 0
+      )
+    )
+    ,
+  ][
+    ,
+    `:=`(
+      column_order  = cumsum(
+        column_order
+      )
+    )
+    ,
+    by = .(
+      sheet_id
+    )
+  ]
+  
+  
   return(
-    coordinates
+    DT
   )
   
 }
