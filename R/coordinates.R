@@ -12,7 +12,7 @@
 #' @importFrom data.table fifelse
 #' 
 #' @author Serkan Korkmaz <serkor1@duck.com>
-data_coordinates <- function(
+data_backend <- function(
     list,
     theme = list(
       # If compact the distance 
@@ -113,7 +113,7 @@ data_coordinates <- function(
 #' list coordinates
 
 # list coordinates;
-list_coordinates <- function(
+list_backend <- function(
     list,
     theme = list(
       compact = TRUE,
@@ -236,12 +236,7 @@ list_coordinates <- function(
 }
 
 
-
-
-
-
-
-get_coordinate <- function(
+wb_backend <- function(
     list,
     type,
     theme = list(
@@ -273,14 +268,14 @@ get_coordinate <- function(
   
   if (all(grepl(pattern = 'list', x = type))) {
     
-    coordinate_list <- list_coordinates(
+    coordinate_list <- list_backen(
       list = list,
       theme = theme
     )
     
   } else {
     
-    coordinate_list <- data_coordinates(
+    coordinate_list <- data_backend(
       list = list,
       theme = theme
     )
@@ -293,14 +288,6 @@ get_coordinate <- function(
       coordinate_list
     )
   )
-  
-  # setorder(
-  #   DT,
-  #   sheet_id,
-  #   column_caption,
-  #   table_caption
-  #   
-  # )
   
   DT[
     ,

@@ -4,7 +4,7 @@
 # objective: These functions adds worksheets
 # to the workbook
 # Setup function;
-#' data_coordinates
+#' data_wb_backend
 #' 
 #' @importFrom data.table rbindlist
 #' @importFrom data.table data.table
@@ -16,7 +16,7 @@
 # table headers;
 table_headers <- function(
     wb,
-    coordinates,
+    wb_backend,
     theme = list(
       color = 'Reds'
     )
@@ -41,11 +41,11 @@ table_headers <- function(
   
   
   # column headers;
-  header_dt <- coordinates[
+  header_dt <- wb_backend[
     between(
       x = column_order,
-      lower = min(coordinates$column_order), 
-      upper = max(coordinates$column_order)
+      lower = min(wb_backend$column_order), 
+      upper = max(wb_backend$column_order)
     ) & 
       table_order == 1
   ]
@@ -104,10 +104,10 @@ table_headers <- function(
   
   # table headers; 
   lapply(
-    1:nrow(coordinates),
+    1:nrow(wb_backend),
     function(i) {
       
-      DT <- coordinates[i,]
+      DT <- wb_backend[i,]
       
       writeData(
         wb = wb,

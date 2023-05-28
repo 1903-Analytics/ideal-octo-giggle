@@ -4,7 +4,7 @@
 \alias{add_theme}
 \title{add_theme}
 \usage{
-add_theme(wb, type, coordinates, theme = list(color = "Reds"))
+add_theme(wb, type, wb_backend, theme = list(color = "Reds"))
 }
 \description{
 add_theme

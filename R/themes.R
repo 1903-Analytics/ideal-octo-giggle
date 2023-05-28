@@ -16,7 +16,7 @@
 add_theme <- function(
     wb,
     type,
-    coordinates,
+    wb_backend,
     theme = list(
       color = 'Reds'
     )
@@ -79,17 +79,17 @@ add_theme <- function(
   )
   
   lapply(
-    1:nrow(coordinates),
+    1:nrow(wb_backend),
     function(i) {
       
-      DT_ <- coordinates[i,]
+      DT_ <- wb_backend[i,]
       
       lapply(
         1:3,
         function(k) {
           
           
-          # Extract coordinates
+          # Extract wb_backend
           coord_range <- .color_coordinates(
             location = option_list$location[k],
             DT = DT_

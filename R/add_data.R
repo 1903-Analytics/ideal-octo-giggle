@@ -15,7 +15,7 @@ add_data <- function(
     wb,
     list,
     type,
-    coordinate,
+    wb_backend,
     color,
     theme = list(
       compact = TRUE,
@@ -30,12 +30,12 @@ add_data <- function(
   
   
   lapply(
-    1:nrow(coordinate),
+    1:nrow(wb_backend),
     function(i) {
       
-      # Extract row of the coordinate
+      # Extract row of the wb_backend
       # data
-      element <- coordinate[i,]
+      element <- wb_backend[i,]
       
       if (combine) {
         

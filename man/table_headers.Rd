@@ -2,12 +2,12 @@
 % Please edit documentation in R/headers.R
 \name{table_headers}
 \alias{table_headers}
-\title{data_coordinates}
+\title{data_wb_backend}
 \usage{
-table_headers(wb, coordinates)
+table_headers(wb, wb_backend, theme = list(color = "Reds"))
 }
 \description{
-data_coordinates
+data_wb_backend
 }
 \author{
 Serkan Korkmaz \href{mailto:serkor1@duck.com}{serkor1@duck.com}

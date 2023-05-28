@@ -57,7 +57,7 @@ generate_workbook <- function(
   
   # 1.2) Determine coordinates of each
   # table within the lists
-  coordinates <- get_coordinate(
+  wb_backend <- wb_backend(
     list = list,
     type = type,
     theme = theme
@@ -90,7 +90,7 @@ generate_workbook <- function(
   add_data(
     wb = wb,
     type = type,
-    coordinate = coordinates,
+    wb_backend = wb_backend,
     list = list,
     theme = theme
   )
@@ -100,7 +100,7 @@ generate_workbook <- function(
   # data
   add_theme(
     wb = wb,
-    coordinates = coordinates,
+    wb_backend = wb_backend,
     type = type,
     theme = list(
       color = theme$color
@@ -109,7 +109,8 @@ generate_workbook <- function(
   
   table_headers(
     wb = wb,
-    coordinates = coordinates,theme = list(
+    wb_backend = wb_backend,
+    theme = list(
       color = theme$color
     )
   )

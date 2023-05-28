@@ -8,7 +8,7 @@ add_data(
   wb,
   list,
   type,
-  coordinate,
+  wb_backend,
   color,
   theme = list(compact = TRUE, combine = FALSE)
 )
