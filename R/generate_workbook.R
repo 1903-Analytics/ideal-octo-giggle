@@ -8,16 +8,20 @@
 # 
 #' generate_workbook
 #' 
-#' This function generates and collects
-#' the workvook
+#' Generate a Workbook which is also stored in `file`.
 #' 
 #' @importFrom openxlsx createWorkbook
 #' @importFrom openxlsx saveWorkbook
 #' 
-#' @returns stores and returns a workbook in the specified
-#' file path
+#' @inheritParams openxlsx::createWorkbook
+#' @inheritParams openxlsx::saveWorkbook
+#' 
+#' @param theme A named list of parameters
+#' 
+#' @returns A workbook
 #' 
 #' @export
+
 # script start; ####
 
 generate_workbook <- function(

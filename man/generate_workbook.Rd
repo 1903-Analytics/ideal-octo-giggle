@@ -15,11 +15,24 @@ generate_workbook(
   overwrite = TRUE
 )
 }
+\arguments{
+\item{file}{A character string naming an xlsx file}
+
+\item{creator}{Creator of the workbook (your name). Defaults to login username}
+
+\item{title}{Workbook properties title}
+
+\item{subject}{Workbook properties subject}
+
+\item{category}{Workbook properties category}
+
+\item{theme}{A named list of parameters}
+
+\item{overwrite}{If \code{TRUE}, overwrite any existing file.}
+}
 \value{
-stores and returns a workbook in the specified
-file path
+A workbook
 }
 \description{
-This function generates and collects
-the workvook
+Generate a Workbook which is also stored in \code{file}.
 }
