@@ -2,7 +2,7 @@
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
   <!-- badges: end -->
 
-# openxlsx wrapper
+# workbookR
 
 This `library` uses `openxlsx` to generate simple and custom `workbooks` without `java` depedencies. It uses `writeData()` for a greater `OpenOffice` support.
 
