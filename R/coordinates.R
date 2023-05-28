@@ -28,8 +28,8 @@ data_coordinates <- function(
   # compact;
   distance <- fifelse(
     theme$compact,
-    yes = 1,
-    no = 2
+    yes = 3,
+    no = 4
     )
   
   combine <- fifelse(
@@ -37,12 +37,6 @@ data_coordinates <- function(
     yes = -distance,
     no = 0
   )
-  
-  
-  
-  
-  
-  
   
   column_caption <- names(list)
   
@@ -66,7 +60,7 @@ data_coordinates <- function(
       
       # The Y coordinate
       # is the start and end of the table
-      y_ <- 3
+      y_ <- 7
       
       table_caption <- names(sheet_element)
       
@@ -129,11 +123,12 @@ list_coordinates <- function(
   
   # global options;
   
+  
   # compact;
   distance <- fifelse(
     theme$compact,
-    yes = 1,
-    no = 2
+    yes = 3,
+    no = 4
   )
   
   combine <- fifelse(
@@ -180,7 +175,7 @@ list_coordinates <- function(
           # columns;
           # Has to be reset between each column
           table_iterator <- 0
-          y_ <- 3
+          y_ <- 7
           
           # identify the largest
           # column number wiithin the list
@@ -215,7 +210,7 @@ list_coordinates <- function(
               
               
               #column_id <<- column_id + 1
-              y_  <<- y_ + nrow(DT) + 1
+              y_  <<- y_ + nrow(DT) + distance + combine
               
               
               return(DT_)
@@ -274,10 +269,6 @@ get_coordinate <- function(
   #   list
   # )
   
-  flatten <- function(x) {
-    if (!inherits(x, "list")) return(list(x))
-    else return(unlist(c(lapply(x, flatten)), recursive = FALSE))
-  }
   
   
   if (all(grepl(pattern = 'list', x = type))) {

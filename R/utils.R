@@ -7,6 +7,29 @@
 # script start; ####
 
 
+flatten <- function(list) {
+  
+  if (!inherits(list, "list")) {
+    
+    list <- list(list)
+    
+  } else {
+    
+    list <- unlist(
+      c(
+        lapply(list, flatten)
+      ),
+      recursive = FALSE
+    )
+  }
+  
+  return(
+    list
+  )
+  
+}
+
+
 .color_coordinates <- function(
     location,
     DT

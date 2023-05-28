@@ -39,19 +39,6 @@ generate_workbook <- function(
     overwrite = TRUE
 ) {
   
-  message('Creating workbook:\n')
-  
-  
-  iteration <- 6
-  
-  pb <- txtProgressBar(
-    min = 0,
-    max = iteration,
-    style = 3,
-  )
-  
-  
-  
   # 1) Determine gloabl parameters
   # for the list passed
   # to all functions
@@ -76,10 +63,6 @@ generate_workbook <- function(
     theme = theme
   )
   
-  setTxtProgressBar(
-    pb = pb,
-    value = 1
-  )
   
   # 2) Build the workbook;
   
@@ -94,10 +77,6 @@ generate_workbook <- function(
     category = category
   )
   
-  setTxtProgressBar(
-    pb = pb,
-    value = 2
-  )
   
   # 2.2) Generate worksheets
   # based on the list
@@ -106,10 +85,6 @@ generate_workbook <- function(
     list = list
   )
   
-  setTxtProgressBar(
-    pb = pb,
-    value = 3
-  )
   # 2.2) Add data to the sheets
   # based on the list
   add_data(
@@ -120,10 +95,6 @@ generate_workbook <- function(
     theme = theme
   )
   
-  setTxtProgressBar(
-    pb = pb,
-    value = 4
-  )
   
   # 2.3) Add a theme to the 
   # data
@@ -136,10 +107,13 @@ generate_workbook <- function(
     )
   )
   
-  setTxtProgressBar(
-    pb = pb,
-    value = 5
+  table_headers(
+    wb = wb,
+    coordinates = coordinates,theme = list(
+      color = theme$color
+    )
   )
+  
   
   # 2.4) Store the workbook
   # locally
@@ -152,10 +126,7 @@ generate_workbook <- function(
     overwrite = overwrite
   )
   
-  setTxtProgressBar(
-    pb = pb,
-    value = 6
-  )
+  
   
   # 3) Return statement;
   # 
