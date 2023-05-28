@@ -2,12 +2,12 @@
 % Please edit documentation in R/themes.R
 \name{add_theme}
 \alias{add_theme}
-\title{themes}
+\title{add_theme}
 \usage{
-add_theme(wb, coordinates, theme = list(color = "Reds"))
+add_theme(wb, type, coordinates, theme = list(color = "Reds"))
 }
 \description{
-themes
+add_theme
 }
 \author{
 Serkan Korkmaz \href{mailto:serkor1@duck.com}{serkor1@duck.com}

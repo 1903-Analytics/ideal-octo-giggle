@@ -57,9 +57,6 @@ data_coordinates <- function(
       # is the start and end of the table
       y_ <- 3
       
-      
-      
-      
       DT <- rbindlist(
         lapply(
           element,
@@ -107,6 +104,107 @@ data_coordinates <- function(
 }
 
 
+#' list coordinates
+
+# list coordinates;
+list_coordinates <- function(
+    list,
+    theme = list(
+      compact = TRUE,
+      combine  = FALSE
+    )
+) {
+  
+  # global options;
+  
+  # compact;
+  distance <- fifelse(
+    theme$compact,
+    yes = 1,
+    no = 2
+  )
+  
+  combine <- fifelse(
+    theme$combine,
+    yes = -distance,
+    no = 0
+  )
+  
+  # list id;
+  # 
+  # sheet numbers
+  
+  iteration <- 1
+  list_id <- 0
+  test_coord <- lapply(
+    list,
+    function(element) {
+      list_id <<- list_id + 1
+      x_ <- 3
+      
+      DT <- lapply(
+        element,
+        function(element_) {
+          
+          table_id <- 1
+          cols <<- max(
+            sapply(element_, ncol)
+          )
+          
+          y_ <- 3
+          
+          
+          DT <- lapply(
+            element_,
+            function(DT) {
+              
+              
+              DT_ <- data.table(
+                list_id = list_id,
+                table   = table_id,
+                nrow    = nrow(DT),
+                ncol    = ncol(DT),
+                x_start = x_,
+                x_end   = x_ + ncol(DT),
+                y_start = y_,
+                y_end   = y_ + nrow(DT)
+              )
+              
+              
+              
+              y_  <<- y_ + nrow(DT) + 1
+              table_id <- table_id + 1
+              return(DT_)
+              
+            }
+          )
+          
+          
+          
+          x_ <<- x_ + cols + 1
+          
+          return(DT)
+          
+        }
+      )
+      
+      
+      iteration <<- iteration + 1
+      
+      
+      return(DT)
+    }
+  )
+  
+  
+  
+}
+
+
+
+
+
+
 
 get_coordinate <- function(
     list,
@@ -135,6 +233,10 @@ get_coordinate <- function(
   
   if (all(grepl(pattern = 'list', x = get_type))) {
     
+    coordinates <- list_coordinates(
+      list = list,
+      theme = theme
+    )
     
   } else {
     

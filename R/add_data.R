@@ -14,6 +14,7 @@
 add_data <- function(
     wb,
     list,
+    type,
     color,
     theme = list(
       compact = TRUE,
@@ -22,10 +23,10 @@ add_data <- function(
 ) {
   
   
-  # determine type;
-  type <- get_type(
-    list = list
-  )
+  # # determine type;
+  # type <- get_type(
+  #   list = list
+  # )
   
   # get coordinates
   coordinate <- get_coordinate(
@@ -33,18 +34,10 @@ add_data <- function(
     theme = theme
   )
   
-  
-  
-  
   iteration <- 1
   
   
   if (all(grepl(pattern = 'list', x = type))) {
-    
-    
-    message(
-      'Is list'
-    )
     
     # TODO: migrate as seperate function
     # can be inside

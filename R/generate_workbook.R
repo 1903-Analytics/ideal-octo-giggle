@@ -35,15 +35,50 @@ generate_workbook <- function(
     overwrite = TRUE
 ) {
   
+  message('Creating workbook:\n')
   
+  
+  iteration <- 6
+  
+  pb <- txtProgressBar(
+    min = 0,
+    max = iteration,
+    style = 3,
+  )
+  
+  
+  
+  # 1) Determine gloabl parameters
+  # for the list passed
+  # to all functions
+  
+  # 1.1) Verify structure validity
+  # and detmine type;
+  # 
+  # Can be list (Multiple columns within sheets)
+  # or 
+  # data.table (A single column within sheets)
+  type <- get_type(
+    list
+  )
+  
+  
+  
+  # 1.2) Determine coordinates of each
+  # table within the lists
   coordinates <- get_coordinate(
     list = list,
     theme = theme
   )
   
+  setTxtProgressBar(
+    pb = pb,
+    value = 1
+  )
   
+  # 2) Build the workbook;
   
-  # 1) Generate workbook
+  # 2.1) Generate workbook
   # TODO: consider wether this
   # has to be moved outside of the 
   # function
@@ -54,39 +89,69 @@ generate_workbook <- function(
     category = category
   )
   
-  # 2) Generate worksheets
+  setTxtProgressBar(
+    pb = pb,
+    value = 2
+  )
+  
+  # 2.2) Generate worksheets
   # based on the list
   add_worksheet(
     wb = wb,
     list = list
   )
   
-  
-  # 3) Add data to the sheets
+  setTxtProgressBar(
+    pb = pb,
+    value = 3
+  )
+  # 2.2) Add data to the sheets
   # based on the list
   add_data(
     wb = wb,
+    type = type,
     list = list,
     theme = theme
   )
   
+  setTxtProgressBar(
+    pb = pb,
+    value = 4
+  )
+  
+  # 2.3) Add a theme to the 
+  # data
   add_theme(
     wb = wb,
     coordinates = coordinates,
+    type = type,
     theme = list(
       color = theme$color
     )
   )
   
-  # 4) Store the workbook
+  setTxtProgressBar(
+    pb = pb,
+    value = 5
+  )
+  
+  # 2.4) Store the workbook
   # locally
+  # 
+  # NOTE: Overwrite is TRUE by
+  # default
   saveWorkbook(
     wb = wb,
     file = file,
     overwrite = overwrite
   )
   
-  # 5) Return statement;
+  setTxtProgressBar(
+    pb = pb,
+    value = 6
+  )
+  
+  # 3) Return statement;
   # 
   # Return the workbook
   # to enable enduser with 
