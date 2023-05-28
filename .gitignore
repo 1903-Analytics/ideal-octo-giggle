@@ -52,3 +52,4 @@ playground/
 
 setup.R
 inst/doc
+*.xlsx
