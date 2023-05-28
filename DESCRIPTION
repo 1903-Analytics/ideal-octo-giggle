@@ -14,7 +14,3 @@ Imports:
     data.table,
     openxlsx,
     RColorBrewer
-Suggests: 
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr

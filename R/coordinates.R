@@ -136,7 +136,8 @@ list_coordinates <- function(
   
   iteration <- 1
   list_id <- 0
-  test_coord <- lapply(
+  
+  lapply(
     list,
     function(element) {
       list_id <<- list_id + 1
@@ -208,6 +209,7 @@ list_coordinates <- function(
 
 get_coordinate <- function(
     list,
+    type,
     theme = list(
       # If compact the distance 
       # between tables are 0,
@@ -227,11 +229,13 @@ get_coordinate <- function(
   # to be written to the workbook
   
   # 1) extract type of list
-  get_type <- get_type(
-    list
-  )
+  # TODO: Move out of the function
+  # and add as parameter
+  # get_type <- get_type(
+  #   list
+  # )
   
-  if (all(grepl(pattern = 'list', x = get_type))) {
+  if (all(grepl(pattern = 'list', x = type))) {
     
     coordinates <- list_coordinates(
       list = list,

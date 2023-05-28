@@ -72,6 +72,7 @@ generate_workbook <- function(
   # table within the lists
   coordinates <- get_coordinate(
     list = list,
+    type = type,
     theme = theme
   )
   
@@ -114,6 +115,7 @@ generate_workbook <- function(
   add_data(
     wb = wb,
     type = type,
+    coordinate = coordinates,
     list = list,
     theme = theme
   )
