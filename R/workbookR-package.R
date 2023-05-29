@@ -2,6 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom data.table between
 #' @importFrom openxlsx addWorksheet
 #' @importFrom openxlsx createStyle
 #' @importFrom openxlsx createWorkbook

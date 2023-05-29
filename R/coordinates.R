@@ -3,6 +3,8 @@
 # date: 2023-05-25
 # objective: These functions adds worksheets
 # to the workbook
+# TODO: If a named list is not passed
+# it should return default values
 # Setup function;
 #' data_coordinates
 #' 
@@ -12,6 +14,7 @@
 #' @importFrom data.table fifelse
 #' 
 #' @author Serkan Korkmaz <serkor1@duck.com>
+#
 data_backend <- function(
     list,
     theme = list(
@@ -39,6 +42,8 @@ data_backend <- function(
   )
   
   column_caption <- names(list)
+  
+  
   
   
   # Sheet iterator in
