@@ -44,6 +44,15 @@ data_backend <- function(
   column_caption <- names(list)
   
   
+  if (is.null(column_caption)) {
+    
+    column_caption <- paste(
+      'Column', 1:length(list)
+    )
+    
+  }
+  
+  
   
   
   # Sheet iterator in
@@ -68,6 +77,14 @@ data_backend <- function(
       y_ <- 7
       
       table_caption <- names(sheet_element)
+      
+      if (is.null(table_caption)) {
+        
+        table_caption <- paste(
+          'Table', 1:length(sheet_element)
+        )
+        
+      }
       
       rbindlist(
         lapply(
@@ -168,6 +185,14 @@ list_backend <- function(
         list[[sheet_iterator]]
       )
       
+      if (is.null(column_caption)) {
+        
+        column_caption <- paste(
+          'Column', 1:length(list[[sheet_iterator]])
+        )
+        
+      }
+      
       
       lapply(
         sheet_element,
@@ -190,6 +215,14 @@ list_backend <- function(
           
           
           table_caption <- names(column_element)
+          
+          if (is.null(table_caption)) {
+            
+            table_caption <- paste(
+              'Table', 1:length(column_element)
+            )
+            
+          }
           
           DT <- lapply(
             column_element,
