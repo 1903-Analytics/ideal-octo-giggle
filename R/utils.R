@@ -7,6 +7,17 @@
 # script start; ####
 
 
+available_colors <- function() {
+  
+  
+  data.table::as.data.table(
+    RColorBrewer::brewer.pal.info,
+    keep.rownames = TRUE
+  )[category %chin% 'seq']$rn
+  
+}
+
+
 flatten <- function(list) {
   
   if (!inherits(list, "list")) {

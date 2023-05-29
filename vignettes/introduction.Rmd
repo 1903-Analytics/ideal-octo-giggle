@@ -1,5 +1,6 @@
 ---
 title: "Create workbooks with workbookR"
+subtitle: "An introduction"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Create workbooks with workbookR}
@@ -17,3 +18,8 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(workbookR)
 ```
+
+All `workbooks` generated uses `openxlsx` and `data.table` as backend. The `generate_workbook` function takes a `named list` as argument to determine number of `sheets`, `columns` and `tables`.
+
+The following `list`, generates a `workbook` with two `sheets` and 
+

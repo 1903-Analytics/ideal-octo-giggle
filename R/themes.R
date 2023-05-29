@@ -12,6 +12,92 @@
 #' @importFrom RColorBrewer brewer.pal
 #' 
 #' @author Serkan Korkmaz <serkor1@duck.com>
+themeOps <- function(
+    theme
+) {
+  
+  
+  
+  
+  
+  if (missing(theme) | is.null(theme)) {
+    
+    warning(
+      'No theme detected. Setting default.\n',
+      call. = FALSE
+      )
+    
+    theme <- list(
+      compact = FALSE,
+      combine = FALSE,
+      color   = 'Greys'
+    )
+    
+  }
+  
+  if (is.null(theme$color)) {
+    
+    theme$color <- 'Greys'
+    
+  }
+  
+  if (is.null(theme$compact)) {
+    
+    theme$compact <- FALSE
+    
+  }
+  
+  if (is.null(theme$combine)) {
+    
+    theme$combine <- FALSE
+    
+  }
+  
+  # Check if color exists
+  # otherwise set to default;
+  available_colors <- available_colors()
+  
+  color_indicator <- grepl(
+    pattern = theme$color, 
+    x = available_colors,
+    ignore.case = TRUE
+  )
+  
+  inavailability_indicator <- as.logical(
+    sum(color_indicator) == 0 
+    )
+  
+  
+  if (inavailability_indicator) {
+    
+    warning(
+      paste0(
+        'Could not find color: ', theme$color,'. Setting default.' 
+      ),
+      call. = FALSE
+    )
+    
+    theme$color <- 'Greys'
+    
+  } else {
+    
+    theme$color <- available_colors[color_indicator]
+    
+  }
+  
+  
+  
+  
+  
+  return(
+    theme
+  )
+}
+
+
+
+
+
 
 add_theme <- function(
     wb,

@@ -31,11 +31,7 @@ generate_workbook <- function(
     title     = NULL,
     subject   = NULL,
     category  = NULL,
-    theme     = list(
-      compact = TRUE,
-      combine = FALSE,
-      color   = 'Reds'
-    ),
+    theme     = NULL,
     overwrite = TRUE
 ) {
   
@@ -53,15 +49,22 @@ generate_workbook <- function(
     list
   )
   
+  # 1.2) Extract theme-defaults if not
+  # supplied
+  theme <- themeOps(
+    theme = theme
+  )
   
   
-  # 1.2) Determine coordinates of each
+  # 1.3) Determine coordinates of each
   # table within the lists
   wb_backend <- wb_backend(
     list = list,
     type = type,
     theme = theme
   )
+  
+ 
   
   
   # 2) Build the workbook;
