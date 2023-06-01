@@ -26,6 +26,7 @@
 
 generate_workbook <- function(
     file      = 'workbook.xlsx',
+    name      = 'data',
     list      = NULL,
     creator   = NULL,
     title     = NULL,

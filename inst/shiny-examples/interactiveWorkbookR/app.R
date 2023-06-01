@@ -8,6 +8,7 @@
 
 
 library(shiny)
+library(workbookR)
 
 # application inputs; ####
 # 

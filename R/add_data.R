@@ -52,6 +52,13 @@ add_data <- function(
         colNames = colNames,
         startRow = element$y_start,
         startCol = element$x_start,
+        name = paste0(
+          'sh', element$sheet_id,
+          '_',
+          'col', element$column_order,
+          '_',
+          'tab', element$table_order
+          ),
         borders = 'surrounding'
       )
       
