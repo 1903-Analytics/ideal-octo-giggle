@@ -16,7 +16,12 @@
 #' @inheritParams openxlsx::createWorkbook
 #' @inheritParams openxlsx::saveWorkbook
 #' 
+#' 
 #' @param theme A named list of parameters
+#' @param list A list of data.tables, can be nested. Or created using the as_workbook_data function
+#' 
+#' @example man/examples/basic_usage.R
+#' 
 #' 
 #' @returns A workbook
 #' 
@@ -26,7 +31,6 @@
 
 generate_workbook <- function(
     file      = 'workbook.xlsx',
-    name      = 'data',
     list      = NULL,
     creator   = NULL,
     title     = NULL,
@@ -46,9 +50,14 @@ generate_workbook <- function(
   # Can be list (Multiple columns within sheets)
   # or 
   # data.table (A single column within sheets)
-  type <- get_type(
-    list
-  )
+  # or
+  # grouped
+  # 
+  # 
+  # TODO: Deprecated
+  # type <- get_type(
+  #   list
+  # )
   
   # 1.2) Extract theme-defaults if not
   # supplied
@@ -56,44 +65,27 @@ generate_workbook <- function(
     theme = theme
   )
   
-  
   # 1.3) Determine coordinates of each
   # table within the lists
   wb_backend <- wb_backend(
     list = list,
-    type = type,
     theme = theme
   )
   
- 
-  
-  
   # 2) Build the workbook;
   
-  # 2.1) Generate workbook
-  # TODO: consider wether this
-  # has to be moved outside of the 
-  # function
-  wb <- createWorkbook(
-    creator  = creator,
-    title    = title,
-    subject  = subject,
-    category = category
-  )
-  
-  
-  # 2.2) Generate worksheets
-  # based on the list
-  add_worksheet(
-    wb = wb,
-    list = list
+  wb <- initialise_workbook(
+    list_names  = names(list),
+    creator     = creator,
+    title       = title,
+    subject     = subject,
+    category    = category
   )
   
   # 2.2) Add data to the sheets
   # based on the list
   add_data(
     wb = wb,
-    type = type,
     wb_backend = wb_backend,
     list = list,
     theme = theme
@@ -105,18 +97,19 @@ generate_workbook <- function(
   add_theme(
     wb = wb,
     wb_backend = wb_backend,
-    type = type,
-    theme = list(
-      color = theme$color
-    )
+    theme = theme
   )
   
-  table_headers(
+  # table_headers(
+  #   wb = wb,
+  #   wb_backend = wb_backend,
+  #   theme = theme
+  # )
+  
+  add_headers(
     wb = wb,
     wb_backend = wb_backend,
-    theme = list(
-      color = theme$color
-    )
+    theme = theme
   )
   
   

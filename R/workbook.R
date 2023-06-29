@@ -7,20 +7,18 @@
 #' .add_worksheet
 #' 
 #' @importFrom openxlsx addWorksheet
+#' @inheritParams openxlsx::createWorkbook
 #' @author Serkan Korkmaz <serkor1@duck.com>
 
 # script start; ####
 
-
 add_worksheet <- function(
-    wb   = NULL,
-    list = NULL 
+    wb         = NULL,
+    list_names = NULL 
 ) {
   
   # function globals;
-  sheet_name <- names(
-    list
-  )
+  sheet_name <- list_names
   
   # set names of sheet if
   # none detected
@@ -53,6 +51,38 @@ add_worksheet <- function(
   )
   
   
+  
+}
+
+
+
+
+initialise_workbook <- function(
+    list_names = NULL,
+    creator    = NULL,
+    title      = NULL,
+    subject    = NULL,
+    category   = NULL
+    ) {
+  
+  # 1) Create workbook
+  wb <- createWorkbook(
+    creator  = creator,
+    title    = title,
+    subject  = subject,
+    category = category
+  )
+  
+  # 2) Add worksheet
+  add_worksheet(
+    wb = wb,
+    list_names = list_names
+  )
+  
+  # 3) return
+  return(
+    wb
+  )
   
 }
 

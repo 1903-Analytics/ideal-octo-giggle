@@ -16,16 +16,14 @@ themeOps <- function(
     theme
 ) {
   
-  
-  
-  
-  
   if (missing(theme) | is.null(theme)) {
     
-    warning(
-      'No theme detected. Setting default.\n',
-      call. = FALSE
-      )
+    
+    .pkg_warning(
+      header = 'No theme detected:',
+      body   = 'using color: {.val Greys} compact: {.val FALSE} and combine: {.val FALSE}'
+    )
+    
     
     theme <- list(
       compact = FALSE,
@@ -52,6 +50,8 @@ themeOps <- function(
     theme$combine <- FALSE
     
   }
+  
+  
   
   # Check if color exists
   # otherwise set to default;
@@ -86,6 +86,7 @@ themeOps <- function(
   }
   
   
+  theme$template <- 'as_is'
   
   
   
@@ -101,14 +102,42 @@ themeOps <- function(
 
 add_theme <- function(
     wb,
-    type,
     wb_backend,
     theme = list(
-      color = 'Reds'
+      color = 'Reds',
+      template = 'as_is'
     )
 ) {
   
   
+  
+  # Extract the theme
+  # for the workbook
+  foo <- try(
+    match.fun(
+    FUN = paste0(
+      '.theme_', theme$template
+  )
+  ),
+  silent = TRUE
+  )
+  
+  if (inherits(foo, 'try-error')) {
+    
+    .pkg_warning(
+      header = 'Template not found:',
+      body   = 'using the {.val as_is}'
+    )
+    
+    foo <- match.fun(
+      '.theme_as_is'
+    )
+    
+  }
+  
+  
+  
+  # NOTE: Usie match.fun or get
   
   # Extract color scheme
   color <- brewer.pal(
@@ -116,91 +145,13 @@ add_theme <- function(
     name = theme$color
   )
   
-  # generate options list
-  option_list <- list(
-    
-    # generates coordinate
-    # ranges based on locations
-    location = c(
-      'header',
-      'sidebar',
-      'table'
-    ),
-    
-    fgFill = c(
-      # Header color
-      color[3],
-      # Siebar color
-      color[2],
-      # Table color
-      color[1]
-    ),
-    
-    fontColour = c(
-      'white',
-      'black',
-      'black'
-    ),
-    
-    border = c(
-      'top',
-      'right',
-      'top'
-    ),
-    
-    borderColour = c(
-      'black',
-      'black',
-      'lightgray'
-    ),
-    
-    borderStyle = c(
-      'thin',
-      'thin',
-      'thin'
-    )
-    
-    
-    
+  
+  foo(
+    wb = wb,
+    wb_backend = wb_backend,
+    color = color
   )
   
-  lapply(
-    1:nrow(wb_backend),
-    function(i) {
-      
-      DT_ <- wb_backend[i,]
-      
-      lapply(
-        1:3,
-        function(k) {
-          
-          
-          # Extract wb_backend
-          coord_range <- .color_coordinates(
-            location = option_list$location[k],
-            DT = DT_
-          )
-          
-          
-          add_color(
-            wb           = wb,
-            sheet        = DT_$sheet_id,
-            fgFill       = option_list$fgFill[k],
-            fontColour   = option_list$fontColour[k],
-            rows         = coord_range$rows,
-            cols         = coord_range$cols,
-            border       = option_list$border[k],
-            borderColour = option_list$borderColour[k],
-            borderStyle  = option_list$borderStyle[k]
-          )
-          
-        }
-      )
-      
-      
-      
-    }
-  )
   
 }
 

@@ -6,7 +6,6 @@
 # of the workbookR
 # script start; ####
 
-
 library(shiny)
 library(workbookR)
 

@@ -2,7 +2,7 @@ Package: workbookR
 Title: Create Woorkbooks with a high level Openxlsx API
 Version: 1.0.0
 Authors@R: 
-    person("Serkan", "Korkmaz", , "info@1903analytics.ai", role = c("aut", "cre"),
+    person("Serkan", "Korkmaz", , "serkor1@duck.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5052-0982"))
 Description: A high level openxlsx wrapper for tables
 License: GPL (>= 2)
@@ -11,6 +11,7 @@ Language: EN
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
+    cli,
     data.table,
     openxlsx,
     RColorBrewer

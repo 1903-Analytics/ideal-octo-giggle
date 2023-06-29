@@ -11,7 +11,7 @@
 A high level openxlsx wrapper for tables
 }
 \author{
-\strong{Maintainer}: Serkan Korkmaz \email{info@1903analytics.ai} (\href{https://orcid.org/0000-0002-5052-0982}{ORCID})
+\strong{Maintainer}: Serkan Korkmaz \email{serkor1@duck.com} (\href{https://orcid.org/0000-0002-5052-0982}{ORCID})
 
 }
 \keyword{internal}

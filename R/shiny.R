@@ -1,6 +1,6 @@
 #' @export
 runExample <- function() {
-  appDir <-system.file("shiny-examples", "interactiveWorkbookR", package = 'workbookR')
+  appDir <- system.file("shiny-examples", "interactiveWorkbookR", package = 'workbookR')
   
   if (appDir == "") {
     

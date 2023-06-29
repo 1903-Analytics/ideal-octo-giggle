@@ -14,7 +14,6 @@
 add_data <- function(
     wb,
     list,
-    type,
     wb_backend,
     color,
     theme = list(
@@ -45,9 +44,25 @@ add_data <- function(
         
       }
       
+      
+      # 1.1) Extract
+      # relevant values
+      sheet    <- element$sheet_id
+      startCol <- element$x_start
+      startRow <- element$y_start
+      rows     <- startRow:element$y_end
+      cols     <- startCol:element$x_end
+      
+      
+      # TODO: 
+      # Get DT
+      DT <- element$table_content[[1]]
+      colnames(DT) <- stringr::str_remove_all(
+        string = colnames(DT), pattern = '.+//')
+      
       writeData(
         wb = wb,
-        x = element$table_content[[1]],
+        x = DT,
         sheet = element$sheet_id,
         colNames = colNames,
         startRow = element$y_start,
@@ -61,6 +76,7 @@ add_data <- function(
           ),
         borders = 'surrounding'
       )
+      
       
       
     }

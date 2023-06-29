@@ -18,6 +18,26 @@ available_colors <- function() {
 }
 
 
+is_list_empty <- function(list) {
+  
+  # this function checks wether 
+  # the list is empty
+  # 
+  # returns TRUE if so
+  all(
+    sapply(
+      list,
+      is.null
+      )
+    )
+  
+  
+  
+  
+}
+
+
+
 flatten <- function(list) {
   
   if (!inherits(list, "list")) {
@@ -79,6 +99,90 @@ flatten <- function(list) {
   )
   
 }
+
+
+# warning messages; ####
+
+.pkg_warning <- function(
+    header,
+    body
+) {
+  
+  #' function information
+  #' 
+  #' @param header a character string with the
+  #' warning header.
+  #' 
+  #' @param body a character string with 
+  #' warning body.
+
+  cli_alert_warning(
+    paste(
+      
+      # 1) warning header
+      style_bold(
+        col_magenta(
+          header
+        )
+      ),
+      
+      # 2) warning body
+      col_magenta(
+        body
+      )
+    )
+  )
+  
+}
+
+
+# error messages; ####
+.pkg_error <- function(
+    header,
+    param,
+    description
+) {
+  
+  #' function information
+  #' 
+  #' @param header a character string with
+  #' the warning hader
+  #' @param param a string with the parameters
+  #' causing the error.
+  #' @param description a description of the error.
+  cli_abort(
+    message = paste(
+      header,
+      param,
+      description
+    ),
+    call = NULL
+  )
+  
+  
+  
+  
+}
+
+.pkg_inform <- function(
+  header,
+  param,
+  description
+  ) {
+  
+  
+  rlang::inform(
+    message = paste(
+      header,
+      param,
+      description
+    ),
+    use_cli_format = TRUE
+  )
+  
+  
+}
+
 
 
 # end of script; ####
