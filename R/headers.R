@@ -184,9 +184,11 @@
     wb_backend
 ) {
   
-  
-  
-  
+  # function information;
+  # 
+  # This function generates
+  # headers for rows and columns
+
   # 2) add relevant
   # headers
   lapply(
@@ -245,8 +247,29 @@
                 )
 
                 # Add lines
-                test <- DT_[ownership %chin% 'row'][-c(1, .N)]
-
+                test <- DT_[ownership %chin% 'row'] 
+                
+                # NOTE: If the test data
+                # is above two rows then 
+                # we need to remove top and bottom
+                # to avoid wrong bordering
+                indicator <- fifelse(
+                  test = nrow(test) > 2,
+                  yes  = TRUE,
+                  no   = FALSE
+                )
+                
+                if (indicator) {
+                  
+                  test <- test[-c(.N)]
+                  
+                } else {
+                  
+                  test <- test[c(1)]
+                  
+                  
+                }
+                
                 lapply(
                   1:nrow(test),
                   function(i){
@@ -258,20 +281,20 @@
                       cols = test$x_start[i]:test$x_end[i],
                       stack = TRUE,
                       style = createStyle(
-                        border = c('TopBottom'),
+                        border = c('Bottom'),
                         borderStyle = 'dashed'
                       )
                     )
                   }
                 )
 
-
-
-
               }
               
               
-              # Add style
+              # add styles and merge cells
+              # 
+              # NOTE: These styles adnd merged cells are applied
+              # to all the headers; rows and headers
               addStyle(
                 wb = wb,
                 sheet = sheet,
@@ -279,7 +302,7 @@
                   fontColour = 'black',
                   valign = 'center',
                   wrapText = TRUE,
-                  fgFill = 'blue',
+                  fgFill = 'green',
                   halign = 'center',
                   fontSize = 12,
                   # textDecoration = 'bold',
@@ -287,21 +310,15 @@
                 ),
                 rows     = rows,
                 cols     = cols,
-                # cols  = DT_$x_start:DT_$x_end,
-                # rows  = DT_$y_start:DT_$y_start,
                 gridExpand = TRUE,
                 stack = TRUE
               )
-              
-              
               
               mergeCells(
                 wb = wb,
                 sheet = sheet,
                 rows     = rows,
                 cols     = cols
-                # cols  = DT_$x_start:DT_$x_end,
-                # rows  = DT_$y_start:DT_$y_end
               )
               
             }
@@ -309,66 +326,8 @@
           
         }
       )
-      # 
-      # # 1.1) Extract
-      # # relevant values
-      # sheet    <- DT_$sheet_id
-      # startCol <- DT_$x_start
-      # startRow <- DT_$y_start
-      # rows     <- startRow
-      # cols     <- startCol:DT_$x_end
-      # 
-      # # # 1) Write caption
-      # # # to the sheet
-      # writeData(
-      #   wb = wb,
-      #   sheet = sheet,
-      #   x = DT_$group,
-      #   startCol = startCol,
-      #   startRow = startRow,
-      #   colNames = FALSE,
-      #   rowNames = FALSE,
-      #   borders = "surrounding",
-      #   borderStyle = "thin"
-      # )
-      # 
-      # addStyle(
-      #   wb = wb,
-      #   sheet = sheet,
-      #   style = createStyle(
-      #     fontColour = 'black',
-      #     valign = 'center',
-      #     wrapText = TRUE,
-      #     halign = 'center',
-      #     fontSize = 14,
-      #     textDecoration = 'bold',
-      #     indent = 2
-      #   ),
-      #   rows     = rows,
-      #   cols     = cols,
-      #   # cols  = DT_$x_start:DT_$x_end,
-      #   # rows  = DT_$y_start:DT_$y_start,
-      #   gridExpand = TRUE,
-      #   stack = TRUE
-      # )
-      # 
-      # 
-      # 
-      # mergeCells(
-      #   wb = wb,
-      #   sheet = sheet,
-      #   rows     = rows,
-      #   cols     = cols
-      #   # cols  = DT_$x_start:DT_$x_end,
-      #   # rows  = DT_$y_start:DT_$y_end
-      # )
-      
-      
     }
   )
-  
-  
-  
 }
 
 
