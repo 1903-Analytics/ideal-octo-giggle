@@ -13,7 +13,6 @@
 # script start; ####
 add_data <- function(
     wb,
-    list,
     wb_backend,
     color,
     theme = list(
@@ -32,10 +31,18 @@ add_data <- function(
     1:nrow(wb_backend),
     function(i) {
       
+      
+      
+      
       # Extract row of the wb_backend
       # data
       element <- wb_backend[i,]
       
+      # Exttract table
+      # coordinates
+      table_coords <- element$table_coords[[1]]
+      
+    
       if (combine) {
         
         colNames <- as.logical(
@@ -48,10 +55,10 @@ add_data <- function(
       # 1.1) Extract
       # relevant values
       sheet    <- element$sheet_id
-      startCol <- element$x_start
-      startRow <- element$y_start
-      rows     <- startRow:element$y_end
-      cols     <- startCol:element$x_end
+      startCol <- table_coords$x_start
+      startRow <- table_coords$y_start
+      rows     <- startRow:table_coords$y_end
+      cols     <- startCol:table_coords$x_end
       
       
       # TODO: 
@@ -65,8 +72,8 @@ add_data <- function(
         x = DT,
         sheet = element$sheet_id,
         colNames = colNames,
-        startRow = element$y_start,
-        startCol = element$x_start,
+        startRow = startRow,
+        startCol = startCol,
         name = paste0(
           'sh', element$sheet_id,
           '_',

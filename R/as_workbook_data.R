@@ -142,6 +142,16 @@ as_workbook_data <- function(
     
   }
   
+  
+  if (missing(by)) {
+    
+    by <- list(
+      column = NULL,
+      row = NULL
+    )
+    
+  }
+  
  
   
   
@@ -207,6 +217,8 @@ as_workbook_data <- function(
       ,
     ]
     row <- 'row'
+    
+    
   }
 
 
@@ -220,6 +232,8 @@ as_workbook_data <- function(
     x = tolower(c(sheet, column, row)),
     fixed = FALSE
   )
+  
+  
 
 
   if (!all(indicator)) {
@@ -229,7 +243,7 @@ as_workbook_data <- function(
     )
 
   }
-
+  
 
 
   # 1) Split by sheets;
@@ -244,7 +258,9 @@ as_workbook_data <- function(
   DT_ <- lapply(
     DT_,
     function(element) {
-
+      
+      
+      
       split(
         element,
         by = column,
@@ -322,11 +338,7 @@ as_workbook_data <- function(
   class(DT_) <- c(
     class(DT),
     'workbook_data',
-    ifelse(
-      test = !is_list_empty(by),
-      yes = 'grouped',
-      no  = NULL
-    )
+    if (!is_list_empty(by)) {'grouped'}
   )
   
   

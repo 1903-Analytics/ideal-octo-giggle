@@ -87,31 +87,30 @@ generate_workbook <- function(
   add_data(
     wb = wb,
     wb_backend = wb_backend,
-    list = list,
     theme = theme
   )
   
   
   # 2.3) Add a theme to the 
   # data
-  add_theme(
-    wb = wb,
-    wb_backend = wb_backend,
-    theme = theme
-  )
-  
-  # table_headers(
+  # add_theme(
   #   wb = wb,
   #   wb_backend = wb_backend,
   #   theme = theme
   # )
-  
+  # 
+  # # table_headers(
+  # #   wb = wb,
+  # #   wb_backend = wb_backend,
+  # #   theme = theme
+  # # )
+  # 
   add_headers(
     wb = wb,
     wb_backend = wb_backend,
     theme = theme
   )
-  
+
   
   # 2.4) Store the workbook
   # locally

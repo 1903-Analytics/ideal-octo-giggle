@@ -62,14 +62,14 @@
         stack = TRUE
       )
       
-      mergeCells(
-        wb = wb,
-        sheet = sheet,
-        rows     = rows,
-        cols     = startCol
-        # cols  = DT_$x_start:DT_$x_end,
-        # rows  = DT_$y_start:DT_$y_end
-      )
+      # mergeCells(
+      #   wb = wb,
+      #   sheet = sheet,
+      #   rows     = rows,
+      #   cols     = startCol
+      #   # cols  = DT_$x_start:DT_$x_end,
+      #   # rows  = DT_$y_start:DT_$y_end
+      # )
       
       
       
@@ -170,7 +170,7 @@
         # rows  = DT_$y_start:DT_$y_end
       )
       
-      
+      # 
     }
   )
   
@@ -185,74 +185,183 @@
 ) {
   
   
-  # 1) convert to data.table
-  # as the wb_backend is passed as a list
-  DT <- rbindlist(
-    wb_backend
-  )
+  
   
   # 2) add relevant
   # headers
   lapply(
-    X   = 1:nrow(DT),
+    X   = 1:nrow(wb_backend),
     FUN = function(i) {
       
       # 1) Extract rowwise
       # elements
-      DT_ <- DT[i,]
+      DT_ <- wb_backend$group_coords[[i]]
+      sheet_id <- wb_backend$sheet_id[i]
       
-      # 1.1) Extract
-      # relevant values
-      sheet    <- DT_$sheet_id
-      startCol <- DT_$x_start
-      startRow <- DT_$y_start
-      rows     <- startRow
-      cols     <- startCol:DT_$x_end
-      
-      # # 1) Write caption
-      # # to the sheet
-      writeData(
-        wb = wb,
-        sheet = sheet,
-        x = DT_$group,
-        startCol = startCol,
-        startRow = startRow,
-        colNames = FALSE,
-        rowNames = FALSE,
-        borders = "surrounding",
-        borderStyle = "thin"
+      # 2) Split by ownership
+      # as to group relevant rows
+      DT_list <- split(
+        x = DT_,
+        f = DT_$ownership
       )
+      
+      lapply(
+        X = DT_list,
+        FUN = function(DT) {
+          
+          # each DT contains seperate information
+          # about grouping 
+          lapply(
+            X = 1:nrow(DT),
+            FUN = function(i) {
+              
+              sheet    <- sheet_id
+              startCol <- DT[i,]$x_start
+              startRow <- DT[i,]$y_start
+              rows     <- startRow:DT[i,]$y_end
+              cols     <- startCol:DT[i,]$x_end
+              
+              
+              writeData(
+                wb = wb,
+                sheet = sheet,
+                startCol = startCol,
+                startRow = startRow,
+                x = DT[i,]$group
+              )
+              
+              
+              if (DT[i,]$ownership == 'row') {
 
-      addStyle(
-        wb = wb,
-        sheet = sheet,
-        style = createStyle(
-          fontColour = 'black',
-          valign = 'center',
-          wrapText = TRUE,
-          halign = 'center',
-          fontSize = 14,
-          textDecoration = 'bold',
-          indent = 2
-        ),
-        rows     = rows,
-        cols     = cols,
-        # cols  = DT_$x_start:DT_$x_end,
-        # rows  = DT_$y_start:DT_$y_start,
-        gridExpand = TRUE,
-        stack = TRUE
+                addStyle(
+                  wb = wb,
+                  sheet = sheet,
+                  rows = rows,
+                  cols = cols,
+                  stack = TRUE,
+                  style = createStyle(
+                    border = c('right')
+                  )
+                )
+
+                # Add lines
+                test <- DT_[ownership %chin% 'row'][-c(1, .N)]
+
+                lapply(
+                  1:nrow(test),
+                  function(i){
+                    addStyle(
+                      wb = wb,
+                      sheet = sheet,
+                      rows = test$y_start[i]:test$y_end[i],
+                      # cols = test$x_start[i]:test$x_end[i],
+                      cols = test$x_start[i]:test$x_end[i],
+                      stack = TRUE,
+                      style = createStyle(
+                        border = c('TopBottom'),
+                        borderStyle = 'dashed'
+                      )
+                    )
+                  }
+                )
+
+
+
+
+              }
+              
+              
+              # Add style
+              addStyle(
+                wb = wb,
+                sheet = sheet,
+                style = createStyle(
+                  fontColour = 'black',
+                  valign = 'center',
+                  wrapText = TRUE,
+                  fgFill = 'blue',
+                  halign = 'center',
+                  fontSize = 12,
+                  # textDecoration = 'bold',
+                  indent = 2
+                ),
+                rows     = rows,
+                cols     = cols,
+                # cols  = DT_$x_start:DT_$x_end,
+                # rows  = DT_$y_start:DT_$y_start,
+                gridExpand = TRUE,
+                stack = TRUE
+              )
+              
+              
+              
+              mergeCells(
+                wb = wb,
+                sheet = sheet,
+                rows     = rows,
+                cols     = cols
+                # cols  = DT_$x_start:DT_$x_end,
+                # rows  = DT_$y_start:DT_$y_end
+              )
+              
+            }
+          )
+          
+        }
       )
-      
-      
-      
-      mergeCells(
-        wb = wb,
-        sheet = sheet,
-        rows     = rows,
-        cols     = cols
-        # cols  = DT_$x_start:DT_$x_end,
-        # rows  = DT_$y_start:DT_$y_end
-      )
+      # 
+      # # 1.1) Extract
+      # # relevant values
+      # sheet    <- DT_$sheet_id
+      # startCol <- DT_$x_start
+      # startRow <- DT_$y_start
+      # rows     <- startRow
+      # cols     <- startCol:DT_$x_end
+      # 
+      # # # 1) Write caption
+      # # # to the sheet
+      # writeData(
+      #   wb = wb,
+      #   sheet = sheet,
+      #   x = DT_$group,
+      #   startCol = startCol,
+      #   startRow = startRow,
+      #   colNames = FALSE,
+      #   rowNames = FALSE,
+      #   borders = "surrounding",
+      #   borderStyle = "thin"
+      # )
+      # 
+      # addStyle(
+      #   wb = wb,
+      #   sheet = sheet,
+      #   style = createStyle(
+      #     fontColour = 'black',
+      #     valign = 'center',
+      #     wrapText = TRUE,
+      #     halign = 'center',
+      #     fontSize = 14,
+      #     textDecoration = 'bold',
+      #     indent = 2
+      #   ),
+      #   rows     = rows,
+      #   cols     = cols,
+      #   # cols  = DT_$x_start:DT_$x_end,
+      #   # rows  = DT_$y_start:DT_$y_start,
+      #   gridExpand = TRUE,
+      #   stack = TRUE
+      # )
+      # 
+      # 
+      # 
+      # mergeCells(
+      #   wb = wb,
+      #   sheet = sheet,
+      #   rows     = rows,
+      #   cols     = cols
+      #   # cols  = DT_$x_start:DT_$x_end,
+      #   # rows  = DT_$y_start:DT_$y_end
+      # )
       
       
     }
@@ -454,31 +563,31 @@ add_headers <- function(
   # and captioning.
   # 
   # Both shouldnt start with 'title'
-  .header(
-    wb = wb,
-    wb_backend = wb_backend$header_coords,
-    fgFill = fgFill
-    )
-  
-  .header(
-    wb = wb,
-    wb_backend = wb_backend$subheader_coords,
-    fgFill = fgFill
-  )
+  # .header(
+  #   wb = wb,
+  #   wb_backend = wb_backend$header_coords,
+  #   fgFill = fgFill
+  #   )
+  # 
+  # .header(
+  #   wb = wb,
+  #   wb_backend = wb_backend$subheader_coords,
+  #   fgFill = fgFill
+  # )
   
   
   # add grouping cols
   .grouping_header(
     wb = wb,
-    wb_backend = wb_backend$group_coords
+    wb_backend = wb_backend
   )
-  
-  
-  .grouping_row(
-    wb = wb,
-    wb_backend = wb_backend$grouprow_coords
-  )
-  
+  # 
+  # 
+  # .grouping_row(
+  #   wb = wb,
+  #   wb_backend = wb_backend$grouprow_coords
+  # )
+  # 
 }
 
 

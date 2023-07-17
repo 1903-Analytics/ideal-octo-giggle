@@ -24,12 +24,14 @@ is_list_empty <- function(list) {
   # the list is empty
   # 
   # returns TRUE if so
+  
   all(
     sapply(
       list,
       is.null
-      )
     )
+  )
+  
   
   
   
@@ -115,7 +117,7 @@ flatten <- function(list) {
   #' 
   #' @param body a character string with 
   #' warning body.
-
+  
   cli_alert_warning(
     paste(
       
@@ -165,10 +167,10 @@ flatten <- function(list) {
 }
 
 .pkg_inform <- function(
-  header,
-  param,
-  description
-  ) {
+    header,
+    param,
+    description
+) {
   
   
   rlang::inform(

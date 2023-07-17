@@ -17,128 +17,366 @@
 #' @importFrom data.table fifelse
 #' 
 #' @author Serkan Korkmaz <serkor1@duck.com>
-#
-data_backend <- function(
-    list,
-    theme = list(
-      # If compact the distance 
-      # between tables are 0,
-      # otherwise 1
-      compact = TRUE,
-      combine = FALSE
-    )
+
+
+# extract data region; #####
+# 
+# 
+# This function extracts
+# the data cells from the
+# data.table
+
+get_table_coords <- function(
+    x_ = 3,
+    y_ = 10,
+    DT
 ) {
   
+  #' function information
+  #' 
+  #' 
+  #' @param x_ the starting x coordinate
+  #' for the data. Has to be an integer
+  #' @param y_ the starting y coordinate
+  #' for the data. has to be an integer
+  #' @param DT the data.table that needs 
+  #' to be written to the workbook
   
-  
-  
-  # global options;
-  
-  
-  
-  
-  # compact;
-  distance <- fifelse(
-    theme$compact,
-    yes = 3,
-    no = 4
-    )
-  
-  combine <- fifelse(
-    theme$combine,
-    yes = -distance,
-    no = 0
-  )
-  
-  column_caption <- names(list)
-  
-  
-  if (is.null(column_caption)) {
+  # error handling and checking
+  # for missing arguments
+  if (missing(DT)) {
     
-    column_caption <- paste(
-      'Column', 1:length(list)
+    cli::cli_abort(
+      message = c(
+        '{.val DT} must be provided'
+      )
+    )
+    
+  }
+  
+  if (!inherits(DT, 'data.table')) {
+    
+    cli::cli_abort(
+      message = c(
+        "{.val DT} must be a data.table",
+        "x" = "{.val DT} is {.cls {class(DT)}} class"
+      )
     )
     
   }
   
   
+  # 1) extract coordinates;
+  # TODO: has to be converted to 
+  # excel coordinates later
+  data.table(
+    x_start = x_,
+    x_end   = x_ + ncol(DT),
+    y_start = y_,
+    # NOTE: we might need to subtract one
+    # from this.
+    y_end   = y_ + nrow(DT)
+  )
   
+}
+
+
+# extract grouping variables; #####
+# if there is grouping by column and/or
+# rows the backend should two entire rows above
+# the tables in each
+
+get_grouping_coords <- function(
+  base_coordinates
+) {
+
   
-  # Sheet iterator in
-  # the workbook
-  sheet_iterator <- 0
+  # error handling and checking
+  # for missing arguments
+  if (missing(base_coordinates)) {
+
+    cli::cli_abort(
+      message = c(
+        '{.val base_coordinates} must be provided'
+      )
+    )
+
+  }
+
+
+  if (!inherits(base_coordinates, 'data.table')) {
+
+    cli::cli_abort(
+      message = c(
+        "{.val base_coordinates} must be a data.table",
+        "x" = "{.val base_coordinates} is {.cls {class(base_coordinates)}} class"
+      )
+    )
+
+  }
+
   
   lapply(
-    list,
-    function(sheet_element) {
+    1:nrow(base_coordinates),
+    FUN = function(i) {
       
-      sheet_iterator <<- sheet_iterator + 1
-      table_iterator <- 0
-      # Start coordinates; 
-      
-      # The X coordinate 
-      # is the start and end of the header
-      x_ <- 3
+      DT <- base_coordinates$table_content[[i]]
+      DT_coords <- base_coordinates$table_coords[[i]]
       
       
-      # The Y coordinate
-      # is the start and end of the table
-      y_ <- 7
+      # 1) prepare grouping columns
+      # and identify locations
       
-      table_caption <- names(sheet_element)
-      
-      if (is.null(table_caption)) {
-        
-        table_caption <- paste(
-          'Table', 1:length(sheet_element)
+      # 1.1) Locate grouping indicators
+      # from the column names
+      grouping_location <- which(
+        sapply(
+          X = colnames(DT),
+          FUN = grepl,
+          pattern = '//'
         )
-        
-      }
+      )
       
-      rbindlist(
-        lapply(
-          sheet_element,
-          function(DT) {
-            
-            
-            
-            table_iterator <<- table_iterator + 1
-            
-            DT_ <- data.table(
-              sheet_id = sheet_iterator,
-              table_caption = table_caption[table_iterator],
-              column_caption = column_caption[sheet_iterator],
-              table_content = list(
-                list[[sheet_iterator]][[table_iterator]]
-              ),
-              nrow    = nrow(DT),
-              ncol    = ncol(DT),
-              x_start = x_,
-              x_end   = x_ + ncol(DT),
-              y_start = y_,
-              y_end   = y_ + nrow(DT)
-            )
-          
-            # NOTE: The '+1' needs to be
-            # changed to a dynamic value
-            # depending on wether it should be
-            # compact or not
-            y_ <<- y_ + DT_$nrow + distance + combine
-            
-            
-            return(DT_)
-            
-          }
+      # 1.2) Extract the names of columns
+      # and convert to data.table while
+      # adding the locations
+      DT_ <- data.table(
+        grouped_columns = names(
+          grouping_location
+        ),
+        # NOTE: These have to be altered
+        # as they assume a starting x_ = 1
+        location =  grouping_location
+      )
+      
+      # 1.3) Split the grouped columns
+      # by the seperator
+      DT_[
+        ,
+        # The group is the main group split
+        # in small subgroupds
+        c('group', 'subgroup') := tstrsplit(
+          x = grouped_columns,
+          "//",
+          fixed = TRUE
+        )
+        ,
+      ]
+      
+      # 1.4) Determine x_start and x_end
+      # by using a primitive fifelse approach
+      DT_[
+        ,
+        coords := fifelse(
+          # If the location is above the previous, then
+          # it must be the end of the location
+          test = location > shift(location),
+          yes  = 'x_end',
+          no   = 'x_start',
+          na   = 'x_start'
+        )
+        ,
+        by = .(
+          group
+        )
+      ]
+      
+      # 1.5) dcast the data so locations are read
+      # column wise.
+      DT_ <- dcast(
+        data = DT_,
+        formula = group ~ coords,
+        value.var = 'location'
+      )
+      
+      # 1.6) Add the remainder columns as
+      # category
+      # TODO: Has to be named from outside the
+      # function
+      DT_ <- rbind(
+        DT_,
+        
+        # create a data.table with the
+        # remaining rows
+        data.table(
+          x_start = 1,
+          x_end   = min(DT_$x_end) - 2,
+          group   = 'Placeholder'
         )
       )
       
       
       
+      
+      
+      
+      # 1.7) Add indicator of group ownership
+      # if column then the the values are 
+      # owned by the groups
+      # if row then there is group ownership
+      DT_[
+        ,
+        ownership := 'column'
+        ,
+      ]
+      
+      DT_[
+        ,
+        `:=`(
+          # NOTE: Its just a parallel
+          # of locations
+          x_start = x_start + DT_coords$x_start - 1,
+          x_end   = x_end  + DT_coords$x_start - 1,
+          y_start = DT_coords$y_start - 2,
+          y_end   = DT_coords$y_start - 1
+        )
+        ,
+      ]
+      
+     
+      
+      # 2) Prepare row grouping
+      # if possible
+      get_row_group <- colnames(DT)[
+        !grepl(
+          x = colnames(DT),
+          # NOTE: We are looking for all values
+          # not called variable or includes a grouping
+          # seperator.
+          #
+          # TODO: Add a relevant prefix here at
+          # a later point
+          pattern = 'variable|//'
+        )
+      ]
+
+      # 2.1) Extract relevant rows
+      # and check if it exists by wrapping it
+      # in try
+      DT_row <- try(
+        DT[
+          ,
+          .(
+            group = get(
+              get_row_group
+            )
+          )
+          ,
+        ]
+      )
+
+      # 2.2) If it is not a try-error
+      # then the data is grouped by row values
+      # as dictated by the 'by' function
+      if (!inherits(DT_row, 'try-error')) {
+
+        # 2.2.1) Extract the location
+        # of the rows
+        DT_row[
+          ,
+          location := which(
+            grepl(
+              x = group,
+              pattern = paste(
+                collapse = '|',
+                unique(DT_row$group)
+              )
+            )
+          )
+          ,
+        ]
+
+        # 2.2.2) extract the coordinates
+        # by using max and min as these
+        # spans more rows - makes fifelse
+        # unfeasible
+        DT_row[
+          ,
+          coords := fcase(
+            location == max(location), 'y_end',
+            location == min(location), 'y_start'
+          )
+          ,
+          by = .(
+            group
+          )
+        ]
+
+        # 2.2.3) dcast the data
+        # as to capture coordiantes
+        DT_row <- dcast(
+          data = DT_row[!is.na(coords)],
+          formula = group ~ coords,
+          value.var = 'location'
+        )
+
+
+        # 2.2.4) Shift the location
+        # of the coordiantes as they
+        # assume a start of (1,1)
+        DT_row[
+          ,
+          `:=`(
+            # Its a single column and therefore
+            # starts and ends at the same y coordinate
+            x_start = DT_coords$x_start,
+            x_end   = DT_coords$x_start,
+            y_start = y_start + DT_coords$y_start,
+            y_end   = y_end   + DT_coords$y_start
+          )
+          ,
+        ]
+
+
+        # 2.2.5) Add ownership
+        # to the data
+        DT_row[
+          ,
+          ownership := 'row'
+          ,
+        ]
+
+
+      }
+
+
+
+      DT_ <- rbind(
+        DT_,
+        DT_row,
+        fill = TRUE
+      )
+      
     }
   )
   
+
+  
+  
+  
+  
+  
+  # return(
+  #   DT_
+  # )
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #' list coordinates
@@ -151,9 +389,6 @@ list_backend <- function(
       combine  = FALSE
     )
 ) {
-  
-  
-  
   
   
   # if grouped
@@ -228,7 +463,8 @@ list_backend <- function(
               table_iterator <- 0
               y_ <- 10
               
-              # identify the largest
+              # identify the largest                    # )
+              # ),
               # column number wiithin the list
               cols <<- max(
                 sapply(column_element, ncol)
@@ -245,7 +481,9 @@ list_backend <- function(
                 
               }
               
-              DT <- lapply(
+              # 1) Generate the table coordinates
+              # and then the remaining
+              DT <- rbindlist(lapply(
                 column_element,
                 function(DT) {
 
@@ -259,213 +497,53 @@ list_backend <- function(
                     table_content = list(
                       list[[sheet_iterator]][[column_iterator]][[table_iterator]]
                     ),
-                    nrow    = nrow(DT),
-                    ncol    = ncol(DT),
+                    # nrow    = nrow(DT),
+                    # ncol    = ncol(DT),
                     table_coords = list(
-                      data.table(
-                      x_start = x_,
-                      x_end   = x_ + ncol(DT),
-                      y_start = y_ + grouping_distance,
-                      y_end   = y_ + nrow(DT)
+                      get_table_coords(
+                        x_ = x_,
+                        y_ = y_ + grouping_distance,
+                        DT = DT 
+                      )
                     )
-                    ),
-                    header_coords = list(
-                      data.table(
-                        caption = column_caption[column_iterator],
-                        sheet_id = sheet_iterator,
-                        x_start = x_,
-                        x_end   = x_ + ncol(DT) - 1,
-                        y_start = y_ - 4,
-                        y_end   = y_ - 3
-                      )
-                    ),
-                    subheader_coords = list(
-                      data.table(
-                        caption = table_caption[table_iterator],
-                        sheet_id = sheet_iterator,
-                        x_start = x_,
-                        x_end   = x_ + ncol(DT) - 1,
-                        y_start = y_ - 2,
-                        y_end   = y_ - 1 
-                      )
-                    ),
-                    x_start = x_,
-                    x_end   = x_ + ncol(DT),
-                    y_start = y_ + grouping_distance,
-                    y_end   = y_ + nrow(DT)
+                    
+                    # table_coords = list(
+                    #   data.table(
+                    #   x_start = x_,
+                    #   x_end   = x_ + ncol(DT),
+                    #   y_start = y_ + grouping_distance,
+                    #   y_end   = y_ + nrow(DT)
+                    # )
+                    # ),
+                    # header_coords = list(
+                    #   data.table(
+                    #     caption = column_caption[column_iterator],
+                    #     sheet_id = sheet_iterator,
+                    #     x_start = x_,
+                    #     x_end   = x_ + ncol(DT) - 1,
+                    #     y_start = y_ - 4,
+                    #     y_end   = y_ - 3
+                    #   )
+                    # ),
+                    # subheader_coords = list(
+                    #   data.table(
+                    #     caption = table_caption[table_iterator],
+                    #     sheet_id = sheet_iterator,
+                    #     x_start = x_,
+                    #     x_end   = x_ + ncol(DT) - 1,
+                    #     y_start = y_ - 2,
+                    #     y_end   = y_ - 1 
+                    #   )
+                    # ),
+                    # x_start = x_,
+                    # x_end   = x_ + ncol(DT),
+                    # y_start = y_ + grouping_distance,
+                    # y_end   = y_ + nrow(DT)
                   )
                   
                   
                   
                   
-                  
-                  if (inherits(list, 'grouped')) {
-                    
-                   
-                    
-                    # Grouping the rows;
-                    # TODO: Add row 
-                    get_col <- colnames(
-                      DT
-                    )
-                    
-                    
-                    get_col <- get_col[
-                      !grepl(
-                        pattern = 'variable|//',
-                        x = get_col 
-                      )
-                    ]
-                    
-                    
-                    grouping_rows <- try(DT[
-                      ,
-                      .(
-                        row_group = get(get_col)
-                      )
-                      ,
-                    ])
-                    
-                    if (!inherits(idx, 'try-error')) {
-                      
-                      
-                      
-                      grouping_rows <- grouping_rows[
-                        ,
-                        location := which(
-                          grepl(
-                            x = row_group,
-                            pattern = paste(
-                              collapse = '|',
-                              unique(grouping_rows$row_group)
-                            )
-                          )
-                        )
-                        ,
-                      ][
-                        ,
-                        coords := fcase(
-                          location == max(location), 'y_end',
-                          location == min(location), 'y_start'
-                        )
-                        ,
-                        by = .(
-                          row_group
-                        )
-                      ][
-                        !is.na(coords)
-                      ]
-                      
-                      
-                      
-                      grouping_rows <- dcast(
-                        data = grouping_rows,
-                        formula = row_group ~ coords,
-                        value.var = 'location'
-                      )
-                      
-                      
-                      grouping_rows[
-                        ,
-                        `:=`(
-                          sheet_id = sheet_iterator,
-                          x_start = x_,
-                          x_end   = x_,
-                          y_start = y_start + y_ + 1,
-                          y_end   = y_end + y_ + 1
-                        )
-                        ,
-                      ]
-                      
-                      
-                      DT_[
-                        ,
-                        `:=`(
-                          grouprow_coords = list(
-                            grouping_rows
-                          )
-                        )
-                        ,
-                      ]
-                      
-                      
-                    }
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    grouping_indicator <- which(
-                      sapply(
-                        colnames(DT),
-                        grepl,
-                        pattern = '//'
-                      )
-                    )
-                    
-                  
-                    
-                    grouping_coords <- data.table(
-                      value_cols = names(grouping_indicator),
-                      location   = grouping_indicator + x_ - 1,
-                      sheet_id   = sheet_iterator
-                    )
-                    
-                    
-                    grouping_coords[
-                      ,
-                      c('group', 'subgroup') := tstrsplit(
-                        value_cols,
-                        '//',
-                        fixed = TRUE
-                      )
-                      ,
-                    ][
-                      ,
-                      `:=`(
-                        coords = fifelse(
-                          location > shift(location),
-                          yes = 'x_end',
-                          no  = 'x_start',
-                          na  = 'x_start' 
-                        ) 
-                      )
-                      ,
-                      by = .(
-                        group
-                      )
-                    ]
-                    
-                    grouping_coords <- dcast(
-                      grouping_coords,
-                      formula = sheet_id + group ~ coords,
-                      value.var = 'location'
-                    )
-                    
-                    
-                    grouping_coords[
-                      ,
-                      `:=`(
-                        y_start = y_,
-                        y_end   = y_ - grouping_distance
-                      )
-                      ,
-                    ]
-                    
-                    DT_[
-                      ,
-                      `:=`(
-                        group_coords = list(
-                          grouping_coords
-                        )
-                      )
-                      ,
-                    ]
-                    
-                  }
                   
                   #column_id <<- column_id + 1
                   y_  <<- y_ + nrow(DT) + distance + combine + grouping_distance
@@ -479,6 +557,25 @@ list_backend <- function(
                   
                 }
               )
+              )
+              
+              
+              
+              
+              if (inherits(list, 'grouped')) {
+
+
+                DT[
+                  ,
+                  group_coords := get_grouping_coords(
+                    base_coordinates = DT
+                      )
+
+
+                  ,
+                ]
+
+              }
               
               
               #caption_id <<- caption_id + 1
@@ -514,8 +611,7 @@ wb_backend <- function(
       compact = TRUE,
       combine = FALSE
     )
-    
-) {
+    ) {
   
   # function information
   # 
@@ -542,7 +638,7 @@ wb_backend <- function(
     
   }
   
-  
+  # generate the back end values
   DT <- list_backend(
     list = list,
     theme = theme
@@ -586,21 +682,6 @@ wb_backend <- function(
       sheet_id
     )
   ]
-  # 
-  # # add headers;
-  # # TODO: Might be a good idea 
-  # # to move outside
-  # is_grouped <- inherits(
-  #   list,
-  #   what = 'grouped'
-  # )
-  # 
-  # 
-  # if (is_grouped) {
-  #   
-  #   
-  #   
-  # }
   
   
   return(
