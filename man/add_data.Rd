@@ -4,14 +4,7 @@
 \alias{add_data}
 \title{.add_data}
 \usage{
-add_data(
-  wb,
-  list,
-  type,
-  wb_backend,
-  color,
-  theme = list(compact = TRUE, combine = FALSE)
-)
+add_data(wb, wb_backend, color, theme = list(compact = TRUE, combine = FALSE))
 }
 \description{
 .add_data

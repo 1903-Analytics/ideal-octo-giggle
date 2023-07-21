@@ -287,6 +287,8 @@
                     )
                   }
                 )
+                
+                
 
               }
               
@@ -478,7 +480,55 @@ table_headers <- function(
 }
 
 
-
+.table_caption <- function(wb, wb_backend) {
+  
+  lapply(
+    1:nrow(wb_backend),
+    function(i) {
+      
+      # Extract
+      DT <- wb_backend$caption_coords[[i]]
+      sheet <- wb_backend$sheet_id[i]
+      
+      # NOTE: There is 
+      # a split between labels
+      # so it has to be wrapped in lapply
+      
+      lapply(
+        1:nrow(DT),
+        function(i) {
+          
+          addStyle(
+            wb = wb,
+            sheet = sheet,
+            style = createStyle(
+              fgFill = 'red'
+            ),
+            cols = DT[i,]$x_start:DT[i,]$x_end,
+            row  = DT[i,]$y_start:DT[i,]$y_end,
+            gridExpand = TRUE,
+            stack = TRUE
+          )
+          
+          
+          writeData(
+            wb = wb,
+            sheet = sheet,
+            x = DT[i,]$label,
+            startCol = DT[i,]$x_start,
+            startRow = DT[i,]$y_start
+          )
+          
+        }
+      )
+      
+      
+    }
+  )
+  
+  
+  
+}
 
 
 
@@ -540,13 +590,11 @@ add_headers <- function(
     wb = wb,
     wb_backend = wb_backend
   )
-  # 
-  # 
-  # .grouping_row(
-  #   wb = wb,
-  #   wb_backend = wb_backend$grouprow_coords
-  # )
-  # 
+  
+  .table_caption(
+    wb = wb,
+    wb_backend = wb_backend
+  )
 }
 
 

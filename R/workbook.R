@@ -22,28 +22,28 @@ add_worksheet <- function(
   
   # set names of sheet if
   # none detected
-  if (is.null(sheet_name)) {
-    
-    # set warning;
-    warning(
-      'No names detected. Setting default.',
-      call. = FALSE
-    )
-    
-    sheet_name <- paste(
-      'Sheet', 1:length(list)
-    )
-    
-  }
+  # if (is.null(sheet_name)) {
+  #   
+  #   # set warning;
+  #   warning(
+  #     'No names detected. Setting default.',
+  #     call. = FALSE
+  #   )
+  #   
+  #   sheet_name <- paste(
+  #     'Sheet', 1:ncol(list)
+  #   )
+  #   
+  # }
   
   invisible(
     lapply(
-      1:length(list),
-      function(i) {
+      sheet_name,
+      function(sheetName) {
         
         addWorksheet(
           wb = wb,
-          sheetName = sheet_name[i]
+          sheetName = sheetName
         )
         
       }

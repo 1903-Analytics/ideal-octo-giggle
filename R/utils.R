@@ -6,6 +6,93 @@
 # to ease the programming
 # script start; ####
 
+# group_by helper; ####
+# 
+# This function groups the data
+.group_by <- function(
+    DT,
+    by
+) {
+  
+  # local variables;
+  # 
+  # These variables are needed for 
+  # further in the function
+  
+  # 1) get column names
+  # for the dcast and melt
+  # functions
+  DT_colnames <- colnames(
+    DT
+  )
+  
+  # 2) extract locations of 
+  # character and factor colums
+  # to identify id_cols and value.vars
+  idx <- which(
+    sapply(
+      X = DT,
+      FUN = function(x) {
+        
+        # Check if its either character
+        # or factor
+        (is.character(x) | is.factor(x))
+        
+      }
+    )
+  )
+  
+  # 3) extract relevant measure and
+  # id vars
+  id.vars <- DT_colnames[
+    idx
+  ]
+  
+  # extract all column names
+  # not found in id.vars
+  measure.vars <- setdiff(
+    x = DT_colnames,
+    y = id.vars
+  )
+  
+  
+  # 1) melt the DT
+  # accordingly
+  DT <- melt(
+    data         = DT,
+    value.name   = 'value',
+    measure.vars = measure.vars,
+    id.vars      = id.vars
+  )
+  
+  # 2) dcast data;
+  DT <- dcast(
+    data = DT,
+    formula = as.formula(
+      object = paste(
+        collapse = '~',
+        c(
+          # lhs
+          paste(c(by$row,'variable'), collapse = '+'),
+          
+          # rhs
+          paste(by$column, collapse = '+')
+        )
+        
+      )
+    ),
+    sep = '//',
+    value.var = 'value'
+  )
+  
+  
+  
+  return(
+    DT
+  )
+  
+}
+
 
 available_colors <- function() {
   
