@@ -5,9 +5,9 @@
 # to excel
 # script start;
 
-# theme: as_is #####
+# theme: default #####
 
-.theme_as_is <- function(
+.theme_default <- function(
   wb,
   wb_backend,
   color
@@ -37,7 +37,7 @@
     ),
     
     fontColour = c(
-      'white',
+      'black',
       'black',
       'black'
     ),
@@ -60,43 +60,49 @@
       'thin'
     )
     
-    
-    
   )
   
+  # Color content; 
   lapply(
     1:nrow(wb_backend),
     function(i) {
       
-      DT_ <- wb_backend[i,]
+      # 1) extract the table coordinates as 
+      # a data.table
+      DT_ <- wb_backend$table_coords[[i]]
+      sheet_id <- wb_backend$sheet_id[i]
       
-      lapply(
-        1:3,
-        function(k) {
-          
-          
-          # Extract wb_backend
-          coord_range <- .color_coordinates(
-            location = option_list$location[k],
-            DT = DT_
-          )
-          
-          
-          add_color(
-            wb           = wb,
-            sheet        = DT_$sheet_id,
-            fgFill       = option_list$fgFill[k],
-            fontColour   = option_list$fontColour[k],
-            rows         = coord_range$rows,
-            cols         = coord_range$cols,
-            border       = option_list$border[k],
-            borderColour = option_list$borderColour[k],
-            borderStyle  = option_list$borderStyle[k]
-          )
-          
-        }
+      # 2) start coloring
+      
+      # 2.1) table content;
+      add_color(
+        wb           = wb,
+        sheet        = sheet_id,
+        fgFill       = option_list$fgFill[3],
+        # NOTE: we add one because its grouped.
+        # needs a more robust approach at some point.
+        rows         = (DT_$y_start+1):DT_$y_end,
+        cols         = (DT_$x_start + 1):(DT_$x_end - 1),
+        border       = option_list$border[3],
+        borderColour = option_list$borderColour[3],
+        borderStyle  = option_list$borderStyle[3],
+        fontColour   = option_list$fontColour[3] 
       )
       
+      # 2.2) Column names
+      add_color(
+        wb           = wb,
+        sheet        = sheet_id,
+        fgFill       = option_list$fgFill[1],
+        # NOTE: we add one because its grouped.
+        # needs a more robust approach at some point.
+        rows         = (DT_$y_start),
+        cols         = (DT_$x_start):(DT_$x_end - 1),
+        border       = c('Top', 'Bottom'),
+        borderColour = option_list$borderColour[1],
+        borderStyle  = option_list$borderStyle[3],
+        fontColour   = option_list$fontColour[3] 
+      )
       
       
     }

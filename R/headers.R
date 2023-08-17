@@ -56,8 +56,6 @@
         ),
         rows     = rows,
         cols     = cols,
-        # cols  = DT_$x_start:DT_$x_end,
-        # rows  = DT_$y_start:DT_$y_start,
         gridExpand = TRUE,
         stack = TRUE
       )
@@ -181,7 +179,8 @@
 
 .grouping_header <- function(
     wb,
-    wb_backend
+    wb_backend,
+    fgFill
 ) {
   
   # function information;
@@ -276,8 +275,11 @@
                     addStyle(
                       wb = wb,
                       sheet = sheet,
+                      
+                      # Based on the rows it might be
+                      # extended to fit the entire table.
+                      # TODO: Later point
                       rows = test$y_start[i]:test$y_end[i],
-                      # cols = test$x_start[i]:test$x_end[i],
                       cols = test$x_start[i]:test$x_end[i],
                       stack = TRUE,
                       style = createStyle(
@@ -304,7 +306,7 @@
                   fontColour = 'black',
                   valign = 'center',
                   wrapText = TRUE,
-                  fgFill = 'green',
+                  fgFill = fgFill,
                   halign = 'center',
                   fontSize = 12,
                   # textDecoration = 'bold',
@@ -480,7 +482,7 @@ table_headers <- function(
 }
 
 
-.table_caption <- function(wb, wb_backend) {
+.table_caption <- function(wb, wb_backend, fgFill) {
   
   lapply(
     1:nrow(wb_backend),
@@ -502,7 +504,7 @@ table_headers <- function(
             wb = wb,
             sheet = sheet,
             style = createStyle(
-              fgFill = 'red'
+              fgFill = fgFill
             ),
             cols = DT[i,]$x_start:DT[i,]$x_end,
             row  = DT[i,]$y_start:DT[i,]$y_end,
@@ -564,36 +566,19 @@ add_headers <- function(
     color[1]
   )
   
-  
-  # headers;
-  # 
-  # 
-  # TODO: Diffferent coloring
-  # and captioning.
-  # 
-  # Both shouldnt start with 'title'
-  # .header(
-  #   wb = wb,
-  #   wb_backend = wb_backend$header_coords,
-  #   fgFill = fgFill
-  #   )
-  # 
-  # .header(
-  #   wb = wb,
-  #   wb_backend = wb_backend$subheader_coords,
-  #   fgFill = fgFill
-  # )
-  
-  
-  # add grouping cols
+  # 1) grouping headers;
   .grouping_header(
     wb = wb,
-    wb_backend = wb_backend
+    wb_backend = wb_backend,
+    fgFill = fgFill[2]
   )
   
+  # NOTE: the caption ONLY
+  # colors the caption area.
   .table_caption(
     wb = wb,
-    wb_backend = wb_backend
+    wb_backend = wb_backend,
+    fgFill = fgFill[3]
   )
 }
 

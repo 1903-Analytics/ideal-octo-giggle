@@ -4,8 +4,8 @@
 #' This function prepares the data
 #' that is fed into to generate workbook funciton
 #' @param DT a data.table
-#' @param sheet character. 
-#' @param colum characte. The column split within
+#' @param structure a named list of structures.
+#' @param by a named list of grouping.
 #' each sheet.
 #' @param row character. The row split
 #' 

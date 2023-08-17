@@ -85,8 +85,9 @@ themeOps <- function(
     
   }
   
-  
-  theme$template <- 'as_is'
+  # TODO: Needs to be in a 
+  # an try function.
+  theme$template <- 'default'
   
   
   
@@ -105,7 +106,7 @@ add_theme <- function(
     wb_backend,
     theme = list(
       color = 'Reds',
-      template = 'as_is'
+      template = 'default'
     )
 ) {
   
@@ -126,11 +127,11 @@ add_theme <- function(
     
     .pkg_warning(
       header = 'Template not found:',
-      body   = 'using the {.val as_is}'
+      body   = 'using the {.val default}'
     )
     
     foo <- match.fun(
-      '.theme_as_is'
+      '.theme_default'
     )
     
   }

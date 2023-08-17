@@ -110,6 +110,13 @@ generate_workbook <- function(
     wb_backend = wb_backend,
     theme = theme
   )
+  
+  
+  add_theme(
+    wb = wb,
+    wb_backend = wb_backend,
+    theme = theme
+  )
 
   
   # 2.4) Store the workbook
