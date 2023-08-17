@@ -150,46 +150,6 @@ flatten <- function(list) {
 }
 
 
-.color_coordinates <- function(
-    location,
-    DT
-) {
-  
-  # this function extracts the coloring
-  # coordinates of the tables
-  
-  if (grepl(pattern = 'header', x = location)) {
-    
-    rows <- DT$y_start
-    cols <- DT$x_start:(DT$x_end-1)
-    
-  }
-  
-  if (grepl(pattern = 'sidebar', x = location)) {
-    
-    rows <- (DT$y_start+1):DT$y_end
-    cols <- DT$x_start
-    
-    
-  }
-  
-  if (grepl(pattern = 'table', x = location)) {
-    
-    cols = (DT$x_start+1):(DT$x_end-1)
-    rows = (DT$y_start+1):(DT$y_end)
-    
-  }
-  
-  return(
-    list(
-      rows = rows,
-      cols = cols
-    )
-  )
-  
-}
-
-
 # warning messages; ####
 
 .pkg_warning <- function(

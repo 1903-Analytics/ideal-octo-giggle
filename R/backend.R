@@ -29,7 +29,7 @@ get_caption_coords <- function(DT, caption, subcaption, adjust) {
   # wrong coloring
   subcaption_DT <- data.table(
     x_start = DT_$x_start,
-    x_end   = DT_$x_end- adjust,
+    x_end   = DT_$x_end - adjust,
     # It should start two rows
     # above the table
     # 
@@ -70,7 +70,8 @@ get_caption_coords <- function(DT, caption, subcaption, adjust) {
 get_table_coords <- function(
     x_ = 3,
     y_ = 10,
-    DT
+    DT,
+    grouping_name = 'Placeholder'
 ) {
   
   #' function information
@@ -128,7 +129,8 @@ get_table_coords <- function(
 # the tables in each
 
 get_grouping_coords <- function(
-    base_coordinates
+    base_coordinates,
+    grouping_name = 'Placeholder'
 ) {
   
   
@@ -267,7 +269,9 @@ get_grouping_coords <- function(
           x_start = 1,
           # was x_start
           x_end   = min(DT_$x_start) - 1,
-          group   = 'Placeholder'
+          
+          # TODO: find a better place
+          group   = grouping_name
         )
       )
       
@@ -719,9 +723,6 @@ wb_backend <- function(
       param  = '{.val list}',
       description = 'has to be class: {.val workbook_data}'
     )
-    
-    
-    
   }
   
   # generate the back end values
@@ -729,13 +730,6 @@ wb_backend <- function(
     list = list,
     theme = theme
   )
-  
-  
-  # DT <- rbindlist(
-  #   flatten(
-  #     coordinate_list
-  #   )
-  # )
   
   DT[
     ,
