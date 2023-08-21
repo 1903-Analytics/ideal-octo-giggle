@@ -13,9 +13,9 @@ as_workbook_data(
 \arguments{
 \item{DT}{a data.table}
 
-\item{sheet}{character.}
+\item{structure}{a named list of structures.}
 
-\item{colum}{characte. The column split within
+\item{by}{a named list of grouping.
 each sheet.}
 
 \item{row}{character. The row split}

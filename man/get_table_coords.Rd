@@ -4,7 +4,7 @@
 \alias{get_table_coords}
 \title{function information}
 \usage{
-get_table_coords(x_ = 3, y_ = 10, DT)
+get_table_coords(x_ = 3, y_ = 10, DT, grouping_name = "Placeholder")
 }
 \arguments{
 \item{x_}{the starting x coordinate
