@@ -4,10 +4,13 @@
 #' This function prepares the data
 #' that is fed into to generate workbook funciton
 #' @param DT a data.table
-#' @param structure a named list of structures.
-#' @param by a named list of grouping.
-#' each sheet.
-#' @param row character. The row split
+#' @param structure a named list of variable given as characters for the final workbook structure. NULL by default.
+#' @param by a named list of grouping variables. Can be NULL. For column grouping >1, the consequtive declared
+#' variables will serve as subheaders.
+#' 
+#' @returns a named list with class 'workbook data' and, if grouped, grouped class.
+#' 
+#' @example man/examples/exampleWorkbookData.R
 #' 
 #' @author Serkan Korkmaz <serkor1@duck.com>
 #' 

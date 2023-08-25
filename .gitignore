@@ -54,3 +54,5 @@ setup.R
 inst/doc
 *.xlsx
 *.xlsx#
+/doc/
+/Meta/

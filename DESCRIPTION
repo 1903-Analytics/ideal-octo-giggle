@@ -6,10 +6,16 @@ Authors@R:
            comment = c(ORCID = "0000-0002-5052-0982"))
 Description: A high level openxlsx wrapper for tables
 License: GPL (>= 2)
+VignetteBuilder: 
+    knitr,
+    rmarkdown
 Encoding: UTF-8
 Language: EN
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown
 Imports: 
     cli,
     data.table,

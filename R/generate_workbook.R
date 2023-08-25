@@ -20,7 +20,6 @@
 #' @param theme A named list of parameters
 #' @param list A list of data.tables, can be nested. Or created using the as_workbook_data function
 #' 
-#' @example man/examples/basic_usage.R
 #' 
 #' 
 #' @returns A workbook
