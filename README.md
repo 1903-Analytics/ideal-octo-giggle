@@ -9,10 +9,21 @@ This `library` uses `openxlsx` to generate simple and custom `workbooks` without
 
 The `library` where specifically developped for the health economic investment model used at `VIVE`. Its repository can be found [here](https://github.com/serkor1/bionic-beaver).
 
-## install
+## install stable version
 
 ```R
-devtools::install_github('https://github.com/1903-Analytics/ideal-octo-giggle')
+devtools::install_github(
+  repo = 'https://github.com/1903-Analytics/ideal-octo-giggle'
+)
+```
+
+### install development version
+
+```R
+devtools::install_github(
+  repo = 'https://github.com/1903-Analytics/ideal-octo-giggle/',
+  ref = 'development'
+)
 ```
 
 ## basic usage
