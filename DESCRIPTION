@@ -20,4 +20,6 @@ Imports:
     cli,
     data.table,
     openxlsx,
-    RColorBrewer
+    RColorBrewer,
+    rlang,
+    shiny

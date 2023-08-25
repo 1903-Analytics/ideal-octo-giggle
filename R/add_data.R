@@ -69,8 +69,20 @@ add_data <- function(
       # TODO: 
       # Get DT
       DT <- element$table_content[[1]]
-      colnames(DT) <- stringr::str_remove_all(
-        string = colnames(DT), pattern = '.+//')
+      
+      
+      # remove the grouping name
+      # and retain the column name
+      # 
+      # ie. the column names when grouped is 
+      # given as;
+      # group//variable
+      
+      colnames(DT) <- gsub(
+        pattern = '.+//',
+        replacement = '',
+        x = colnames(DT)
+      )
       
       writeData(
         wb = wb,
