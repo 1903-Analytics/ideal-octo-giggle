@@ -5,11 +5,16 @@
 # workbooks.
 # 
 # function information;
+#' @keywords internal
 #' .add_data
 #' 
 #' @importFrom openxlsx writeData
 #' @importFrom openxlsx createStyle
 #' @importFrom data.table fifelse
+#' 
+#' 
+
+
 # script start; ####
 add_data <- function(
     wb,

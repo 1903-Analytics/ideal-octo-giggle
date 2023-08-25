@@ -5,7 +5,7 @@
 # to the workbook
 # Setup function;
 #' data_wb_backend
-#' 
+#' @keywords internal
 #' @importFrom data.table rbindlist
 #' @importFrom data.table data.table
 #' @importFrom openxlsx mergeCells

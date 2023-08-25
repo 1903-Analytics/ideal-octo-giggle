@@ -19,3 +19,4 @@ add_color(
 \description{
 add_color
 }
+\keyword{internal}

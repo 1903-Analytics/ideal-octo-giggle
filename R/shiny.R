@@ -1,3 +1,11 @@
+#' runExample
+#' 
+#' @description
+#' This function runs the shiny application
+#' of workbookR.
+#' 
+#' @author Serkan Korkm
+#' 
 #' @export
 runExample <- function() {
   appDir <- system.file("shiny-examples", "interactiveWorkbookR", package = 'workbookR')

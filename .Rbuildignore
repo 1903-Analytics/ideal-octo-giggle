@@ -3,7 +3,7 @@
 ^LICENSE\.md$
 ^doc$
 ^Meta$
-playground/
+playground
 renv.lock
 renv
 setup.R

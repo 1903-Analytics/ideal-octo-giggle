@@ -10,7 +10,7 @@
 # which passes into the remainder
 # Setup function;
 #' data_coordinates
-#' 
+#' @keywords internal
 #' @importFrom data.table rbindlist
 #' @importFrom data.table data.table
 #' @importFrom openxlsx addWorksheet
@@ -61,7 +61,7 @@ get_caption_coords <- function(DT, caption, subcaption, adjust) {
 }
 
 # extract data region; #####
-# 
+#' @keywords internal
 # 
 # This function extracts
 # the data cells from the
@@ -452,7 +452,7 @@ get_grouping_coords <- function(
 
 
 #' list coordinates
-
+#' @keywords internal
 # list coordinates;
 list_backend <- function(
     list,

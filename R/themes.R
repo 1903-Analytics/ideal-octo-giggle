@@ -6,7 +6,7 @@
 # script start; ####
 #' add_theme
 #' 
-#' 
+#' @keywords internal
 #' @importFrom openxlsx createStyle
 #' @importFrom openxlsx addStyle
 #' @importFrom RColorBrewer brewer.pal
@@ -160,7 +160,7 @@ add_theme <- function(
 
 #' add_color 
 #' 
-#' 
+#' @keywords internal
 #' 
 #' @importFrom openxlsx addStyle
 #' @importFrom openxlsx createStyle

@@ -5,7 +5,7 @@
 # to the workbook
 # Setup function;
 #' .add_worksheet
-#' 
+#' @keywords internal
 #' @importFrom openxlsx addWorksheet
 #' @inheritParams openxlsx::createWorkbook
 #' @author Serkan Korkmaz <serkor1@duck.com>
