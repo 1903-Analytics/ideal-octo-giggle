@@ -106,35 +106,35 @@ available_colors <- function() {
 
 
 is_list_empty <- function(list) {
-  
-  # this function checks wether 
+
+  # this function checks wether
   # the list is empty
-  # 
+  #
   # returns TRUE if so
-  
+
   all(
     sapply(
       list,
       is.null
     )
   )
-  
-  
-  
-  
-  
+
+
+
+
+
 }
 
 
 
 flatten <- function(list) {
-  
+
   if (!inherits(list, "list")) {
-    
+
     list <- list(list)
-    
+
   } else {
-    
+
     list <- unlist(
       c(
         lapply(list, flatten)
@@ -142,11 +142,11 @@ flatten <- function(list) {
       recursive = FALSE
     )
   }
-  
+
   return(
     list
   )
-  
+
 }
 
 

@@ -4,3 +4,7 @@
 ^doc$
 ^Meta$
 playground/
+renv.lock
+renv
+setup.R
+LICENSE
